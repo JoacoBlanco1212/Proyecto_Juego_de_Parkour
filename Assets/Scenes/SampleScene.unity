@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 45047004}
   - component: {fileID: 45047003}
   - component: {fileID: 45047002}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -337,6 +337,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 10
+  groundDrag: 1
+  playerHeight: 2
+  whatIsGround:
+    serializedVersion: 2
+    m_Bits: 1024
   orientation: {fileID: 354143435}
 --- !u!1 &354143434
 GameObject:
