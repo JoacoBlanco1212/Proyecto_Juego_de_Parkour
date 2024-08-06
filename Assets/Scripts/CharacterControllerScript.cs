@@ -14,6 +14,8 @@ public class CharacterControllerScript : MonoBehaviour
     public float airMultiplier;
     bool readyToJump;
 
+    
+
     [Header("Ground check")]
 
     public float playerHeight;
@@ -33,6 +35,7 @@ public class CharacterControllerScript : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+        readyToJump = true;
     }
 
     
@@ -40,7 +43,11 @@ public class CharacterControllerScript : MonoBehaviour
     void Update()
     {
         //Ground check
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f, whatIsGround);
+        if (grounded)
+        {
+            Debug.Log("grounded is true");
+        }
 
         MyInput();
         SpeedControl();
@@ -64,7 +71,13 @@ public class CharacterControllerScript : MonoBehaviour
     {
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
-        rb.AddForce(moveDirection.normalized * moveSpeed, ForceMode.Force);
+        if (grounded)
+        {
+            rb.AddForce(moveDirection.normalized * moveSpeed, ForceMode.Force);
+        } else if (!grounded)
+        {
+            rb.AddForce(moveDirection.normalized * moveSpeed * airMultiplier, ForceMode.Force);
+        }
     }
 
     private void MyInput()
@@ -72,6 +85,20 @@ public class CharacterControllerScript : MonoBehaviour
         //Get keyboard inputs
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
+
+        //When to jump
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("Jump key pressed");
+        }
+        if (Input.GetKeyDown(KeyCode.Space) && readyToJump && !grounded)
+        {
+            readyToJump = false;
+
+            Jump();
+
+            Invoke(nameof(ResetJump), jumpCooldown);
+        }
     }
 
     private void SpeedControl()
@@ -87,9 +114,14 @@ public class CharacterControllerScript : MonoBehaviour
 
     private void Jump()
     {
-        //Reset Y vel
+        //Reset y vel
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+    }
+
+    private void ResetJump()
+    {
+        readyToJump = true;
     }
 }
