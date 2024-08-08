@@ -29,16 +29,20 @@ public class CharacterControllerScript : MonoBehaviour
     float playerHeight;
     public LayerMask whatIsGround;
     bool grounded;
+
+    [Header("Slope handler")]
+    public float maxSlopeAngle;
+    RaycastHit slopeHit;
     
     [Header("Player info")]
     public Transform orientation;
     float horizontalInput;
-    float verticalInput;
+    public float verticalInput;
     public float moveSpeed;
     public float crouchingSpeed;
     public float airSpeed;
 
-    Vector3 moveDirection;
+    public Vector3 moveDirection;
 
     Rigidbody rb;
 
@@ -74,7 +78,7 @@ public class CharacterControllerScript : MonoBehaviour
         float rayLength = playerHeight * 0.5f + 0.3f;
         Vector3 rayCastPos = new Vector3(transform.position.x, transform.position.y + playerHeight * 1.95f, transform.position.z);
         grounded = Physics.Raycast(rayCastPos, Vector3.down, rayLength, whatIsGround);
-        Debug.DrawRay(rayCastPos, Vector3.down * rayLength, grounded ? Color.green : Color.red);
+        // Debug.DrawRay(rayCastPos, Vector3.down * rayLength, grounded ? Color.green : Color.red);
 
         MyInput();
         SpeedControl();
@@ -89,14 +93,23 @@ public class CharacterControllerScript : MonoBehaviour
     private void MovePlayer()
     {
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+        //On slope
+        if (OnSlope())
+        {
+            rb.AddForce(GetSlopeMoveDirection() * moveSpeed, ForceMode.Force);
+        }
+        //Crouching
         if(state == MovementState.crouching)
         {
+            Debug.Log("Crouched");
             rb.AddForce(moveDirection.normalized * crouchingSpeed, ForceMode.Force);
         }
+        //On ground
         else if (grounded)
         {
             rb.AddForce(moveDirection.normalized * moveSpeed, ForceMode.Force);
         } 
+        //On air
         else if (state == MovementState.air)
         {
             rb.AddForce(moveDirection.normalized * airSpeed, ForceMode.Force);
@@ -188,5 +201,30 @@ public class CharacterControllerScript : MonoBehaviour
             moveSpeed = airSpeed;
         }
         
+    }
+
+    private bool OnSlope()
+    {
+        //Checks for a slope
+        float rayLength = playerHeight * 0.5f + 0.3f;
+        Vector3 rayCastPos = new Vector3(transform.position.x, transform.position.y + playerHeight * 1.95f, transform.position.z);
+
+        bool IsThereASlope = Physics.Raycast(rayCastPos, Vector3.down, out slopeHit, rayLength);
+        Debug.DrawRay(rayCastPos, Vector3.down * rayLength, IsThereASlope ? Color.green : Color.red);
+
+
+        if (IsThereASlope) 
+        {
+            //Returns if the slope angle is walkable
+            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            return angle < maxSlopeAngle && angle != 0;
+        }
+        return false;
+    }
+
+    private Vector3 GetSlopeMoveDirection()
+    {
+        return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
+        //Returns angle/direction of slope
     }
 }
