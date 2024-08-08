@@ -6,7 +6,6 @@ public class CharacterControllerScript : MonoBehaviour
 {
     [Header("Movement")]
     public float sprintSpeed;
-    float moveSpeed;
     public float groundDrag;
 
     [Header("Jumping")]
@@ -35,6 +34,9 @@ public class CharacterControllerScript : MonoBehaviour
     public Transform orientation;
     float horizontalInput;
     float verticalInput;
+    public float moveSpeed;
+    public float crouchingSpeed;
+    public float airSpeed;
 
     Vector3 moveDirection;
 
@@ -60,6 +62,8 @@ public class CharacterControllerScript : MonoBehaviour
         startYscale = transform.localScale.y;
 
         moveSpeed = sprintSpeed;
+        crouchingSpeed = moveSpeed * crouchSpeedMultiplier;
+        airSpeed = moveSpeed * airMultiplier;
     }
 
 
@@ -69,12 +73,8 @@ public class CharacterControllerScript : MonoBehaviour
         //Ground check
         float rayLength = playerHeight * 0.5f + 0.3f;
         Vector3 rayCastPos = new Vector3(transform.position.x, transform.position.y + playerHeight * 1.95f, transform.position.z);
-
         grounded = Physics.Raycast(rayCastPos, Vector3.down, rayLength, whatIsGround);
-
         Debug.DrawRay(rayCastPos, Vector3.down * rayLength, grounded ? Color.green : Color.red);
-
-
 
         MyInput();
         SpeedControl();
@@ -91,7 +91,7 @@ public class CharacterControllerScript : MonoBehaviour
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
         if(state == MovementState.crouching)
         {
-            rb.AddForce(moveDirection.normalized * moveSpeed * crouchSpeedMultiplier, ForceMode.Force);
+            rb.AddForce(moveDirection.normalized * crouchingSpeed, ForceMode.Force);
         }
         else if (grounded)
         {
@@ -99,7 +99,7 @@ public class CharacterControllerScript : MonoBehaviour
         } 
         else if (state == MovementState.air)
         {
-            rb.AddForce(moveDirection.normalized * moveSpeed * airMultiplier, ForceMode.Force);
+            rb.AddForce(moveDirection.normalized * airSpeed, ForceMode.Force);
         }
     }
 
@@ -162,7 +162,7 @@ public class CharacterControllerScript : MonoBehaviour
 
     private void StateHandler()
     {
-        if (rb.velocity == new Vector3(0, 0, 0))
+        if (rb.velocity == new Vector3(0, 0, 0) && !IsCrouching)
         {
 
             state = MovementState.idle;
@@ -171,7 +171,7 @@ public class CharacterControllerScript : MonoBehaviour
         {
             // State: Crouching
             state = MovementState.crouching;
-            moveSpeed = crouchSpeedMultiplier;
+            moveSpeed = crouchingSpeed;
             
             
         }
@@ -185,6 +185,7 @@ public class CharacterControllerScript : MonoBehaviour
         {
             // State: Air
             state = MovementState.air;
+            moveSpeed = airSpeed;
         }
         
     }

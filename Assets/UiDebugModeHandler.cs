@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class UiDebugModeHandler : MonoBehaviour
 {
     public Text speedText;
-    public Text stateText;
 
     public GameObject player;
     CharacterControllerScript playerScript;
@@ -25,6 +24,5 @@ public class UiDebugModeHandler : MonoBehaviour
     void Update()
     {
         speedText.text = "Speed: " + playerRB.velocity.ToString();
-        stateText.text = "State: " + playerScript.state.ToString();
     }
 }
