@@ -14,6 +14,9 @@ public class PlayerInput : MonoBehaviour
 
     void Update()
     {
-        
+         if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            pauseMenu.Pause();
+        }
     }
 }

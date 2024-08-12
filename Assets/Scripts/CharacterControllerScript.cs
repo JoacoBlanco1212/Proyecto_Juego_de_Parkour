@@ -96,7 +96,7 @@ public class CharacterControllerScript : MonoBehaviour
         float rayLength = 0.3f;
         Vector3 rayPos = new Vector3(RayCastPos.transform.position.x, RayCastPos.transform.position.y, RayCastPos.transform.position.z);
         grounded = Physics.Raycast(rayPos, Vector3.down, rayLength, whatIsGround);
-        // Debug.DrawRay(rayPos, Vector3.down * rayLength, grounded ? Color.green : Color.red);
+        Debug.DrawRay(rayPos, Vector3.down * rayLength, grounded ? Color.green : Color.red);
     }
 
     private void MovePlayer()

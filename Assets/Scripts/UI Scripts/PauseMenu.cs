@@ -6,11 +6,12 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
-    [SerializeField] GameObject pauseMenu;
     public void Pause()
     {
-        pauseMenu.SetActive(true);
+        gameObject.SetActive(true);
         Time.timeScale = 0;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     public void Home()
@@ -21,8 +22,10 @@ public class PauseMenu : MonoBehaviour
 
     public void Resume()
     {
-        pauseMenu.SetActive(false);
+        gameObject.SetActive(false);
         Time.timeScale = 1;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     public void Restart()
@@ -30,5 +33,5 @@ public class PauseMenu : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         Time.timeScale = 1;
     }
-
+   
 }
