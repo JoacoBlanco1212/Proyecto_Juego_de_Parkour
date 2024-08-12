@@ -823,6 +823,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 7026179143957023100, guid: 4cc150a9881839a45b175b173e4de002,
+        type: 3}
+      propertyPath: maxSlopeAngle
+      value: 35
+      objectReference: {fileID: 0}
     - target: {fileID: 7026179143957023101, guid: 4cc150a9881839a45b175b173e4de002,
         type: 3}
       propertyPath: m_LocalPosition.x

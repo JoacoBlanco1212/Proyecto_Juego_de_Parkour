@@ -20,9 +20,17 @@ public class CharacterControllerScript : MonoBehaviour
     public bool IsCrouching;
     float startYscale;
 
+    [Header("Sliding")]
+    public float slideTime;
+    public float slideYmultiplier;
+    public float slideSpeedRequirementMultiplier;
+    public float slideSpeedMultiplier;
+    public bool IsSliding;
+
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode crouchKey = KeyCode.C;
+    public KeyCode slideKey = KeyCode.LeftControl;
 
     [Header("Ground check")]
     public LayerMask whatIsGround;
@@ -34,11 +42,12 @@ public class CharacterControllerScript : MonoBehaviour
     RaycastHit slopeHit;
 
     [Header("Player info")]
-
     public float moveSpeed;
     public float speedLimit = 3f;
     public float crouchingSpeed;
     public float airSpeed;
+    public float slideSpeed;
+    public float slideSpeedRequirement;
     public Transform orientation;
     public Transform RayCastPos;
 
@@ -54,6 +63,7 @@ public class CharacterControllerScript : MonoBehaviour
         sprinting,
         crouching,
         air,
+        sliding,
     }
 
     // Start is called before the first frame update
@@ -71,6 +81,9 @@ public class CharacterControllerScript : MonoBehaviour
         moveSpeed = sprintSpeed;
         crouchingSpeed = moveSpeed * crouchSpeedMultiplier;
         airSpeed = moveSpeed * airMultiplier;
+        slideSpeed = moveSpeed * slideSpeedMultiplier;
+        slideSpeedRequirement = moveSpeed * slideSpeedRequirementMultiplier;
+
 
     }
 
@@ -110,7 +123,7 @@ public class CharacterControllerScript : MonoBehaviour
         //Crouching
         if(state == MovementState.crouching)
         {
-            rb.AddForce(moveDirection.normalized * crouchingSpeed * 3f, ForceMode.Acceleration);
+            rb.AddForce(moveDirection.normalized * crouchingSpeed, ForceMode.Acceleration);
         }
         //On ground
         else if (grounded)
@@ -154,6 +167,15 @@ public class CharacterControllerScript : MonoBehaviour
             transform.localScale = new Vector3(transform.localScale.x, startYscale, transform.localScale.z);
             IsCrouching = false;
         }
+
+        //Start sliding
+        if (Input.GetKeyDown(slideKey) && CanSlide())
+        {
+            transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y * slideYmultiplier, transform.localScale.z);
+            IsSliding = true;
+        }
+
+
     }
 
     private void SpeedControl()
@@ -194,6 +216,12 @@ public class CharacterControllerScript : MonoBehaviour
             moveSpeed = crouchingSpeed;
             
             
+        }
+        else if (IsSliding && grounded)
+        {
+            //State: Sliding
+            state = MovementState.sliding;
+            moveSpeed = slideSpeed;
         }
         else if (grounded)
         {
@@ -253,6 +281,18 @@ public class CharacterControllerScript : MonoBehaviour
             // Reset to default when on the ground or not moving vertically
             Physics.gravity = new Vector3(0, -9.8f, 0); 
             rb.drag = groundDrag; 
+        }
+    }
+
+    private bool CanSlide()
+    {
+        if ((rb.velocity.x > slideSpeedRequirement || rb.velocity.z > slideSpeedRequirement) && (state != MovementState.air || state != MovementState.crouching))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 }
