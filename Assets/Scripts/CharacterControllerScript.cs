@@ -21,7 +21,7 @@ public class CharacterControllerScript : MonoBehaviour
     float startYscale;
 
     [Header("Sliding")]
-    public float slideTime;
+    public float slideTime = 0.5f;
     public float slideYmultiplier;
     public float slideSpeedRequirementMultiplier;
     public float slideSpeedMultiplier;
@@ -82,7 +82,7 @@ public class CharacterControllerScript : MonoBehaviour
         crouchingSpeed = moveSpeed * crouchSpeedMultiplier;
         airSpeed = moveSpeed * airMultiplier;
         slideSpeed = moveSpeed * slideSpeedMultiplier;
-        slideSpeedRequirement = moveSpeed * slideSpeedRequirementMultiplier;
+        slideSpeedRequirement = speedLimit * slideSpeedRequirementMultiplier;
 
 
     }
@@ -125,6 +125,11 @@ public class CharacterControllerScript : MonoBehaviour
         {
             rb.AddForce(moveDirection.normalized * crouchingSpeed, ForceMode.Acceleration);
         }
+        //Sliding
+        if (state == MovementState.sliding)
+        {
+            rb.AddForce(moveDirection.normalized * slideSpeed, ForceMode.Acceleration);
+        }
         //On ground
         else if (grounded)
         {
@@ -144,7 +149,7 @@ public class CharacterControllerScript : MonoBehaviour
         verticalInput = Input.GetAxis("Vertical");
 
         //When to jump
-        if (Input.GetKeyDown(jumpKey) && readyToJump && grounded && state != MovementState.crouching)
+        if (Input.GetKeyDown(jumpKey) && readyToJump && grounded && (state != MovementState.crouching && state != MovementState.sliding))
         {
             readyToJump = false;
 
@@ -173,9 +178,31 @@ public class CharacterControllerScript : MonoBehaviour
         {
             transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y * slideYmultiplier, transform.localScale.z);
             IsSliding = true;
+            StartCoroutine(StartSlideCountdown());
+        }
+        //Leave sliding
+        if (Input.GetKeyUp(slideKey))
+        {
+            ForceLeaveSliding();
+        }
+    }
+
+    IEnumerator StartSlideCountdown()
+    {
+        float remainingTime = slideTime;
+
+        while (remainingTime > 0)
+        {
+            yield return new WaitForSeconds(0.1f);
+            remainingTime -= 0.1f;
+
+            if (Input.GetKeyUp(slideKey))
+            {
+                remainingTime = 0f;
+            }
         }
 
-
+        ForceLeaveSliding();
     }
 
     private void SpeedControl()
@@ -286,7 +313,7 @@ public class CharacterControllerScript : MonoBehaviour
 
     private bool CanSlide()
     {
-        if ((rb.velocity.x > slideSpeedRequirement || rb.velocity.z > slideSpeedRequirement) && (state != MovementState.air || state != MovementState.crouching))
+        if ((Mathf.Abs(rb.velocity.x) > slideSpeedRequirement || Mathf.Abs(rb.velocity.z) > slideSpeedRequirement) && (state != MovementState.air && state != MovementState.crouching))
         {
             return true;
         }
@@ -294,5 +321,12 @@ public class CharacterControllerScript : MonoBehaviour
         {
             return false;
         }
+    }
+
+    private void ForceLeaveSliding()
+    {
+        transform.localScale = new Vector3(transform.localScale.x, startYscale, transform.localScale.z);
+        state = MovementState.sprinting;
+        IsSliding = false;
     }
 }
