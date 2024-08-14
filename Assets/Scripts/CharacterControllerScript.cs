@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CharacterControllerScript : MonoBehaviour
 {
-    [Header("Movement")]
+    [Header("Sprinting")]
     public float sprintSpeed;
     public float groundDrag;
 
@@ -27,6 +27,21 @@ public class CharacterControllerScript : MonoBehaviour
     public float slideSpeedMultiplier;
     public bool IsSliding;
 
+    [Header("Wallrunning")]
+    public bool isWallRun;
+    public float wallRunSpeedMultiplier;
+    public LayerMask whatIsWall;
+    public float maxWallRunTime;
+    private float wallRunTimer;
+
+    [Header("Wall detection")]
+    public float wallCheckDistance;
+    public float minJumpHeight;
+    public RaycastHit leftWallHit;
+    public RaycastHit rightWallHit;
+    public bool wallLeft;
+    public bool wallRight;
+
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode crouchKey = KeyCode.C;
@@ -48,8 +63,10 @@ public class CharacterControllerScript : MonoBehaviour
     public float airSpeed;
     public float slideSpeed;
     public float slideSpeedRequirement;
+    public float wallRunSpeed;
     public Transform orientation;
-    public Transform RayCastPos;
+    public Transform groundRayCastPos;
+    public Transform wallRayCastPos;
 
     Vector3 moveDirection;
     float verticalInput;
@@ -64,6 +81,8 @@ public class CharacterControllerScript : MonoBehaviour
         crouching,
         air,
         sliding,
+        wallRunning,
+
     }
 
     // Start is called before the first frame update
@@ -84,7 +103,7 @@ public class CharacterControllerScript : MonoBehaviour
         slideSpeed = moveSpeed * slideSpeedMultiplier;
         slideSpeedRequirement = speedLimit * slideSpeedRequirementMultiplier;
 
-
+        wallRunSpeed = moveSpeed * wallRunSpeedMultiplier;
     }
 
 
@@ -96,20 +115,28 @@ public class CharacterControllerScript : MonoBehaviour
         SpeedControl();
         StateHandler();
         AdjustGravityAndDrag();
+
+        CheckForWall();
+        whenToWallRun();
     }
 
     private void FixedUpdate()
     {
         MovePlayer();
+
+        if (isWallRun)
+        {
+            WallRunningMovement();
+        }
     }
 
     private void IsGrounded()
     {
         //Ground check
         float rayLength = 0.3f;
-        Vector3 rayPos = new Vector3(RayCastPos.transform.position.x, RayCastPos.transform.position.y, RayCastPos.transform.position.z);
+        Vector3 rayPos = new Vector3(groundRayCastPos.transform.position.x, groundRayCastPos.transform.position.y, groundRayCastPos.transform.position.z);
         grounded = Physics.Raycast(rayPos, Vector3.down, rayLength, whatIsGround);
-        Debug.DrawRay(rayPos, Vector3.down * rayLength, grounded ? Color.green : Color.red);
+        // Debug.DrawRay(rayPos, Vector3.down * rayLength, grounded ? Color.green : Color.red);
     }
 
     private void MovePlayer()
@@ -131,7 +158,7 @@ public class CharacterControllerScript : MonoBehaviour
             rb.AddForce(moveDirection.normalized * slideSpeed, ForceMode.Acceleration);
         }
         //On ground
-        else if (grounded)
+        if (grounded)
         {
             rb.AddForce(moveDirection.normalized * moveSpeed, ForceMode.Acceleration);
         } 
@@ -233,16 +260,20 @@ public class CharacterControllerScript : MonoBehaviour
     {
         if (rb.velocity == new Vector3(0, 0, 0) && !IsCrouching)
         {
-
+            //State: Idle
             state = MovementState.idle;
+        }
+        else if (isWallRun)
+        {
+            //State: Wallrunning
+            state = MovementState.wallRunning;
+            moveSpeed = wallRunSpeed;
         }
         else if (IsCrouching && grounded)
         {
             // State: Crouching
             state = MovementState.crouching;
             moveSpeed = crouchingSpeed;
-            
-            
         }
         else if (IsSliding && grounded)
         {
@@ -269,7 +300,7 @@ public class CharacterControllerScript : MonoBehaviour
     {
         //Checks for a slope
         float rayLength = 0.3f;
-        Vector3 rayPos = new Vector3(RayCastPos.transform.position.x, RayCastPos.transform.position.y, RayCastPos.transform.position.z);
+        Vector3 rayPos = new Vector3(groundRayCastPos.transform.position.x, groundRayCastPos.transform.position.y, groundRayCastPos.transform.position.z);
         bool IsThereASlope = Physics.Raycast(rayPos, Vector3.down, out slopeHit, rayLength);
         // Debug.DrawRay(rayPos, Vector3.down * rayLength, IsThereASlope ? Color.green : Color.red);
 
@@ -329,4 +360,62 @@ public class CharacterControllerScript : MonoBehaviour
         state = MovementState.sprinting;
         IsSliding = false;
     }
+
+    private void CheckForWall()
+    {
+        wallRight = Physics.Raycast(wallRayCastPos.position, orientation.right, out rightWallHit, wallCheckDistance, whatIsWall);
+        wallLeft = Physics.Raycast(wallRayCastPos.position, -orientation.right, out leftWallHit, wallCheckDistance, whatIsWall);
+    }
+
+    private bool AboveGround()
+    {
+        bool aboveGround = Physics.Raycast(groundRayCastPos.position, Vector3.down, minJumpHeight, whatIsGround);
+        Debug.DrawRay(groundRayCastPos.position, Vector3.down * minJumpHeight, aboveGround ? Color.green : Color.red);
+        Debug.Log(aboveGround);
+        return !aboveGround;
+    }
+
+    private void whenToWallRun()
+    {
+        if((wallLeft || wallRight) && verticalInput > 0 && AboveGround())
+        {
+            if (!isWallRun)
+            {
+                StartWallRunning();
+            }
+        }
+        else
+        {
+            if (isWallRun)
+            {
+                StopWallRunning();
+            }
+        }
+    }
+
+    private void StartWallRunning()
+    {
+        isWallRun = true;
+    }
+
+    private void WallRunningMovement()
+    {
+        rb.useGravity = false;
+        rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y * 0.5f, rb.velocity.z);
+
+        Vector3 wallNormal = wallRight ? rightWallHit.normal : leftWallHit.normal;
+        Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
+
+        //Wallrun force
+        rb.AddForce(wallForward * wallRunSpeed, ForceMode.Acceleration);
+    }
+
+    private void StopWallRunning()
+    {
+        isWallRun = false;
+    }
+
+    // Video minuto 6:09
+    // La re puta madre, tantos errores. El player se queda levitando (problema del rb.UseGravity)
+    // Al iniciar wallRun el raycast da false y el player no recibe addForce (probablemente problema del raycast)
 }
