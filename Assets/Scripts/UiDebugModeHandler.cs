@@ -23,6 +23,7 @@ public class UiDebugModeHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        speedText.text = "Speed: " + playerRB.velocity.ToString();
+        Vector2 flatVel = new Vector2 (playerRB.velocity.x, playerRB.velocity.z);
+        speedText.text = "Speed: " + playerRB.velocity.ToString() + " [" + flatVel.magnitude + "]";
     }
 }
