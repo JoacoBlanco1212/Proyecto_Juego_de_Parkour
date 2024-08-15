@@ -33,6 +33,9 @@ public class CharacterControllerScript : MonoBehaviour
     public LayerMask whatIsWall;
     public float maxWallRunTime;
     private float wallRunTimer;
+    public float wallJumpSideForce;
+    public float wallJumpUpForce;
+    bool shouldWallJump;
 
     [Header("Wall detection")]
     public float wallCheckDistance;
@@ -43,6 +46,7 @@ public class CharacterControllerScript : MonoBehaviour
     public bool wallRight;
 
     [Header("Keybinds")]
+    public KeyCode wallJumpKey = KeyCode.Space;
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode crouchKey = KeyCode.C;
     public KeyCode slideKey = KeyCode.LeftControl;
@@ -189,7 +193,7 @@ public class CharacterControllerScript : MonoBehaviour
         }
 
         //Start crouching
-        if (Input.GetKeyDown(crouchKey) && state != MovementState.air)
+        if (Input.GetKeyDown(crouchKey) && state != MovementState.air && state != MovementState.wallRunning)
         {
             transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y * crouchYmultiplier, transform.localScale.z);
             // rb.AddForce(Vector3.up * 2f, ForceMode.Impulse);
@@ -386,6 +390,11 @@ public class CharacterControllerScript : MonoBehaviour
             {
                 StartWallRunning();
             }
+            //Wall Jump
+            if (Input.GetKeyDown(wallJumpKey))
+            {
+                wallJump();
+            }
         }
         else
         {
@@ -420,14 +429,37 @@ public class CharacterControllerScript : MonoBehaviour
 
         //Wallrun force
         rb.AddForce(wallForward * wallRunSpeed, ForceMode.Acceleration);
+        //Push player to wall for curve walls
+        
+        if (!(wallLeft && horizontalInput > 0) && !(wallRight && horizontalInput < 0) && isWallRun)
+        {
+            rb.AddForce(-wallNormal * 10f, ForceMode.Acceleration);
+        }
     }
 
     private void StopWallRunning()
     {
         isWallRun = false;
         rb.useGravity = true;
-    }
-
-    // Video minuto 6:09
+    } 
     
+    private void wallJump()
+    {
+        Vector3 wallNormal = wallRight ? rightWallHit.normal : leftWallHit.normal;
+        
+        //Push player away from the wall
+        rb.position += wallNormal * 0.1f;
+        
+        Vector3 forceToApply = transform.up  * wallJumpUpForce + wallNormal * wallJumpSideForce;
+        shouldWallJump = true;
+
+        //Reset Y vel and AddForce
+        StopWallRunning();
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        rb.AddForce(forceToApply, ForceMode.Impulse);
+
+        //Video de wallJump
+        //Bug con el wallJump en paralelo no funcionando
+        //Solucion: ?
+    }
 }
