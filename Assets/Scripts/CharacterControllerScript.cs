@@ -31,11 +31,10 @@ public class CharacterControllerScript : MonoBehaviour
     public bool isWallRun;
     public float wallRunSpeedMultiplier;
     public LayerMask whatIsWall;
-    public float maxWallRunTime;
-    private float wallRunTimer;
     public float wallJumpSideForce;
     public float wallJumpUpForce;
-    bool shouldWallJump;
+    public float maxWallRunTime;
+    private float wallRunTimer;
 
     [Header("Wall detection")]
     public float wallCheckDistance;
@@ -44,6 +43,15 @@ public class CharacterControllerScript : MonoBehaviour
     public RaycastHit rightWallHit;
     public bool wallLeft;
     public bool wallRight;
+
+    [Header("Exiting Wallrun")]
+    private bool exitingWall;
+    public float exitWallTime;
+    private float exitWallTimer;
+
+    [Header("WallRun gravity")]
+    public bool useGravity;
+    public float gravityCounterForce;
 
     [Header("Keybinds")]
     public KeyCode wallJumpKey = KeyCode.Space;
@@ -68,6 +76,8 @@ public class CharacterControllerScript : MonoBehaviour
     public float slideSpeed;
     public float slideSpeedRequirement;
     public float wallRunSpeed;
+
+    [Header("References")]
     public Transform orientation;
     public Transform groundRayCastPos;
     public Transform wallRayCastPos;
@@ -311,23 +321,26 @@ public class CharacterControllerScript : MonoBehaviour
 
     private void AdjustGravityAndDrag()
     {
-        if (rb.velocity.y > 0.1f) // Ascending
+        if (state != MovementState.wallRunning)
         {
-            // Reduce gravity and increase drag for slower ascent
-            Physics.gravity = new Vector3(0, -9.8f * 0.8f, 0); 
-            rb.drag = 1.5f; 
-        }
-        else if (rb.velocity.y < -0.1f) // Descending
-        {
-            // Increase gravity and reduce drag for faster descent
-            Physics.gravity = new Vector3(0, -9.8f * 2.0f, 0);
-            rb.drag = 0.5f; 
-        }
-        else
-        {
-            // Reset to default when on the ground or not moving vertically
-            Physics.gravity = new Vector3(0, -9.8f, 0); 
-            rb.drag = groundDrag; 
+            if (rb.velocity.y > 0.1f) // Ascending
+            {
+                // Reduce gravity and increase drag for slower ascent
+                Physics.gravity = new Vector3(0, -9.8f * 0.8f, 0);
+                rb.drag = 1.5f;
+            }
+            else if (rb.velocity.y < -0.1f) // Descending
+            {
+                // Increase gravity and reduce drag for faster descent
+                Physics.gravity = new Vector3(0, -9.8f * 2.0f, 0);
+                rb.drag = 0.5f;
+            }
+            else
+            {
+                // Reset to default when on the ground or not moving vertically
+                Physics.gravity = new Vector3(0, -9.8f, 0);
+                rb.drag = groundDrag;
+            }
         }
     }
 
@@ -384,11 +397,22 @@ public class CharacterControllerScript : MonoBehaviour
 
     private void whenToWallRun()
     {
-        if((wallLeft || wallRight) && verticalInput > 0 && AboveGround())
+        //State 1: WallRunning
+        if((wallLeft || wallRight) && verticalInput > 0 && AboveGround() && !exitingWall)
         {
             if (!isWallRun)
             {
                 StartWallRunning();
+            }
+            //Wallrun timer
+            if (wallRunTimer > 0)
+            {
+                wallRunTimer -= Time.deltaTime;
+            }
+            if (wallRunTimer <= 0 && isWallRun)
+            {
+                exitingWall = true;
+                exitWallTimer = exitWallTime;
             }
             //Wall Jump
             if (Input.GetKeyDown(wallJumpKey))
@@ -396,6 +420,26 @@ public class CharacterControllerScript : MonoBehaviour
                 wallJump();
             }
         }
+
+        //State 2: Exiting wallRun
+        else if (exitingWall)
+        {
+            if (isWallRun)
+            {
+                StopWallRunning();
+            }
+            
+            if (exitWallTimer > 0)
+            {
+                exitWallTimer -= Time.deltaTime;
+            }
+            if (exitWallTimer <= 0)
+            {
+                exitingWall = false;
+            }
+        }
+
+        //State: None
         else
         {
             if (isWallRun)
@@ -408,13 +452,15 @@ public class CharacterControllerScript : MonoBehaviour
     private void StartWallRunning()
     {
         isWallRun = true;
+        wallRunTimer = maxWallRunTime;
+
+
     }
 
     private void WallRunningMovement()
     {
-        rb.useGravity = false;
+        rb.useGravity = useGravity;
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
         Vector3 wallNormal = wallRight ? rightWallHit.normal : leftWallHit.normal;
         Vector3 wallForward = Vector3.zero;
 
@@ -429,11 +475,16 @@ public class CharacterControllerScript : MonoBehaviour
 
         //Wallrun force
         rb.AddForce(wallForward * wallRunSpeed, ForceMode.Acceleration);
+
         //Push player to wall for curve walls
-        
         if (!(wallLeft && horizontalInput > 0) && !(wallRight && horizontalInput < 0) && isWallRun)
         {
-            rb.AddForce(-wallNormal * 10f, ForceMode.Acceleration);
+            rb.AddForce(-wallNormal * 5f, ForceMode.Acceleration);
+        }
+
+        if (useGravity)
+        {
+            rb.AddForce(transform.up * gravityCounterForce, ForceMode.Force);
         }
     }
 
@@ -445,13 +496,17 @@ public class CharacterControllerScript : MonoBehaviour
     
     private void wallJump()
     {
+        //Enter exiting wall state
+        exitingWall = true;
+        exitWallTimer = exitWallTime;
+
         Vector3 wallNormal = wallRight ? rightWallHit.normal : leftWallHit.normal;
         
         //Push player away from the wall
         rb.position += wallNormal * 0.1f;
         
         Vector3 forceToApply = transform.up  * wallJumpUpForce + wallNormal * wallJumpSideForce;
-        shouldWallJump = true;
+
 
         //Reset Y vel and AddForce
         StopWallRunning();
@@ -459,7 +514,7 @@ public class CharacterControllerScript : MonoBehaviour
         rb.AddForce(forceToApply, ForceMode.Impulse);
 
         //Video de wallJump
-        //Bug con el wallJump en paralelo no funcionando
+        //Bug con el wallJump en paralelo no funcionando (arreglado?, nose)
         //Solucion: ?
     }
 }
