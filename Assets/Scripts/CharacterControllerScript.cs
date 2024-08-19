@@ -30,6 +30,7 @@ public class CharacterControllerScript : MonoBehaviour
     [Header("Wallrunning")]
     public bool isWallRun;
     public float wallRunSpeedMultiplier;
+    public float wallRunSpeedRequierementMultiplier;
     public float wallJumpSideForce;
     public float wallJumpUpForce;
     public float maxWallRunTime;
@@ -55,7 +56,7 @@ public class CharacterControllerScript : MonoBehaviour
     public float climbSpeedMultiplier;
     public float maxClimbTime;
     private float climbTimer;
-    private bool isClimbing;
+    public bool isClimbing;
 
     [Header("Climb detection")]
     public float climbDetectionLength;
@@ -75,6 +76,7 @@ public class CharacterControllerScript : MonoBehaviour
     private int climbJumpsLeft;
 
     [Header("Keybinds")]
+    public KeyCode climbKey = KeyCode.Space;
     public KeyCode climbJumpKey = KeyCode.Space;
     public KeyCode wallJumpKey = KeyCode.Space;
     public KeyCode jumpKey = KeyCode.Space;
@@ -141,6 +143,7 @@ public class CharacterControllerScript : MonoBehaviour
         slideSpeedRequirement = speedLimit * slideSpeedRequirementMultiplier;
 
         wallRunSpeed = moveSpeed * wallRunSpeedMultiplier;
+        wallRunSpeedRequierement = speedLimit * wallRunSpeedRequierementMultiplier;
 
         climbSpeed = speedLimit * climbSpeedMultiplier;
     }
@@ -149,22 +152,22 @@ public class CharacterControllerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        IsGrounded();
         MyInput();
-        StateHandler();
-        AdjustGravityAndDrag();
+
+        IsGrounded();
 
         CheckForWall();
         whenToWallRun();
 
         WallClimbCheck();
         whenToClimb();
+
+        AdjustGravityAndDrag();
+        StateHandler();
     }
 
     private void FixedUpdate()
     {
-        MovePlayer();
-
         if (isWallRun)
         {
             WallRunningMovement();
@@ -173,6 +176,7 @@ public class CharacterControllerScript : MonoBehaviour
         {
             WallClimb();
         }
+        MovePlayer();
         SpeedControl();
     }
 
@@ -433,7 +437,7 @@ public class CharacterControllerScript : MonoBehaviour
     private void whenToWallRun()
     {
         //State 1: WallRunning
-        if((wallLeft || wallRight) && verticalInput > 0 && AboveGround() && !exitingWall)
+        if((wallLeft || wallRight) && verticalInput > 0 && AboveGround() && !exitingWall && Input.GetKey(wallJumpKey) && (rb.velocity.magnitude > wallRunSpeedRequierement || isClimbing))
         {
             if (!isWallRun)
             {
@@ -449,13 +453,12 @@ public class CharacterControllerScript : MonoBehaviour
                 exitingWall = true;
                 exitWallTimer = exitWallTime;
             }
-            //Wall Jump
-            if (Input.GetKeyDown(wallJumpKey))
-            {
-                wallJump();
-            }
         }
-
+        // Wall jump
+        else if (Input.GetKeyUp(wallJumpKey) && isWallRun)
+        {
+            wallJump();
+        }
         //State 2: Exiting wallRun
         else if (exitingWall)
         {
@@ -474,7 +477,7 @@ public class CharacterControllerScript : MonoBehaviour
             }
         }
 
-        //State: None
+        //State 3: None
         else
         {
             if (isWallRun)
@@ -556,7 +559,7 @@ public class CharacterControllerScript : MonoBehaviour
     private void WallClimbCheck()
     {
         wallFront = Physics.SphereCast(wallRayCastPos.position, sphereCastRadius, orientation.forward, out frontWallHit, climbDetectionLength);
-        Debug.DrawRay(wallRayCastPos.position, orientation.forward * climbDetectionLength, wallFront ? Color.green : Color.red);
+        // Debug.DrawRay(wallRayCastPos.position, orientation.forward * climbDetectionLength, wallFront ? Color.green : Color.red);
 
         wallLookAngle = Vector3.Angle(orientation.forward, -frontWallHit.normal);
         
@@ -570,7 +573,7 @@ public class CharacterControllerScript : MonoBehaviour
     private void whenToClimb()
     {
         // State 1: Climbing
-        if (wallFront && Input.GetKey(KeyCode.W) && wallLookAngle < maxWallLookAngle)
+        if (wallFront && Input.GetKey(climbKey) && wallLookAngle < maxWallLookAngle)
         {
             if (!isClimbing && climbTimer > 0) 
             {
@@ -588,6 +591,12 @@ public class CharacterControllerScript : MonoBehaviour
             }
         }
 
+        //State: ClimbJump
+        else if (wallFront && Input.GetKeyUp(climbJumpKey) && climbJumpsLeft > 0 && !grounded && isClimbing)
+        {
+            ClimbJump();
+        }
+
         //State 3: None
         else
         {
@@ -597,11 +606,7 @@ public class CharacterControllerScript : MonoBehaviour
             }
         }
 
-        //State: ClimbJump
-        if (wallFront && Input.GetKeyDown(climbJumpKey) && climbJumpsLeft > 0)
-        {
-            ClimbJump();
-        }
+        
     }
 
     private void StartClimbing()
