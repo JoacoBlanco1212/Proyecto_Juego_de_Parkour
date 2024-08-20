@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: ae9ba6c0d4e3633469cb11ce52483745
+guid: 3eaee9a403e4f7042a31bf2120a640ec
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
@@ -84,7 +84,35 @@ ModelImporter:
     animationWrapMode: 0
     extraExposedTransformPaths: []
     extraUserProperties: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: mixamo.com
+      takeName: mixamo.com
+      firstFrame: 0
+      lastFrame: 250
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 1
   meshes:
     lODScreenPercentages: []
@@ -120,11 +148,16 @@ ModelImporter:
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
   importAnimation: 1
-  copyAvatar: 0
+  copyAvatar: 1
   humanDescription:
     serializedVersion: 2
     human: []
-    skeleton: []
+    skeleton:
+    - name: humano proyecto boceto(Clone)
+      parentName: 
+      position: {x: 0.61124545, y: 2.0862074, z: -0.00000028030038}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 0.32824045, y: 0.32824045, z: 0.32824045}
     armTwist: 0.5
     foreArmTwist: 0.5
     upperLegTwist: 0.5
@@ -136,7 +169,8 @@ ModelImporter:
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 9f9fe27a09bdc8c46aa2e47e071ab0cc,
+    type: 3}
   animationType: 2
   humanoidOversampling: 1
   additionalBone: 0
