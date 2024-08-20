@@ -9,9 +9,9 @@ public class MainMenu : MonoBehaviour
 {
     // Parte de Graphics Quality
     public TMP_Dropdown graphicsDropDown;
-
-    // Parte de Volumen
     public Slider masterVol, musicVol, sfxVol;
+    public SoundManager soundManagerScp;
+    public GameManager gameManagerScp;
     public AudioMixer mainAudioMixer;
 
     // Cambio de Graficos
@@ -38,10 +38,11 @@ public class MainMenu : MonoBehaviour
         mainAudioMixer.SetFloat("SfxVol", sfxVol.value);
     }
 
+
     // Cambio de escena a Game (escena)
     public void PlayGame()
     {
-        SceneManager.LoadSceneAsync(1);
+        gameManagerScp.ChangeScene("Game");
     }
 
     // Funcionamiento de cerrar juego
