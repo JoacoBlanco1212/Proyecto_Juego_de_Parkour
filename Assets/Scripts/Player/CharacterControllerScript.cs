@@ -82,9 +82,9 @@ public class CharacterControllerScript : MonoBehaviour
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode crouchKey = KeyCode.C;
     public KeyCode slideKey = KeyCode.LeftControl;
+    public KeyCode landingKey = KeyCode.LeftShift;
 
     [Header("Ground check")]
-
     bool grounded;
 
     [Header("Slope handler")]
@@ -101,6 +101,7 @@ public class CharacterControllerScript : MonoBehaviour
     public float wallRunSpeed;
     public float wallRunSpeedRequierement;
     public float climbSpeed;
+    public float playerHealth;
 
     [Header("References")]
     public Transform orientation;
@@ -137,7 +138,7 @@ public class CharacterControllerScript : MonoBehaviour
         startYscale = transform.localScale.y;
 
         moveSpeed = sprintSpeed;
-        crouchingSpeed = moveSpeed * crouchSpeedMultiplier;
+        crouchingSpeed = speedLimit * crouchSpeedMultiplier;
         airSpeed = moveSpeed * airMultiplier;
         slideSpeed = moveSpeed * slideSpeedMultiplier;
         slideSpeedRequirement = speedLimit * slideSpeedRequirementMultiplier;
@@ -199,7 +200,7 @@ public class CharacterControllerScript : MonoBehaviour
         //Crouching
         else if(state == MovementState.crouching)
         {
-            rb.AddForce(moveDirection.normalized * crouchingSpeed, ForceMode.Acceleration);
+            rb.velocity = new Vector3 (moveDirection.x * crouchingSpeed, 0f, moveDirection.z * crouchingSpeed);
         }
         //Sliding
         else if (state == MovementState.sliding)
@@ -551,8 +552,7 @@ public class CharacterControllerScript : MonoBehaviour
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         rb.AddForce(forceToApply, ForceMode.Impulse);
 
-        //Video de wallJump
-        //Bug con el wallJump en paralelo no funcionando (arreglado?, nose)
+        //Bug con el wallJump en paralelo no funcionando (arreglado?, no se)
         //Solucion: ?
     }
 
@@ -632,5 +632,22 @@ public class CharacterControllerScript : MonoBehaviour
         rb.AddForce(forceToApply, ForceMode.Impulse);
 
         climbJumpsLeft--;
+    }
+
+    private void checkForFallDmg()
+    {
+        if (grounded && rb.velocity.y > 4f)
+        {
+            if (Input.GetKey(landingKey))
+            {
+                Debug.Log("Fall dmg reduced");
+            }
+            else
+            {
+                Debug.Log("fall dmg not reduced");
+            }
+
+            Debug.Log("Fall dmg occurred");
+        }
     }
 }
