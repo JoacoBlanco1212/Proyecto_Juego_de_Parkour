@@ -1,9 +1,9 @@
 fileFormatVersion: 2
-guid: ae9ba6c0d4e3633469cb11ce52483745
+guid: 03f285939c1900b4e9af4d0ce7db98a6
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
-    100000: //RootNode
+    100000: Cube.004
     100002: mixamorig:Head
     100004: mixamorig:HeadTop_End
     100006: mixamorig:Hips
@@ -29,7 +29,8 @@ ModelImporter:
     100046: mixamorig:Spine
     100048: mixamorig:Spine1
     100050: mixamorig:Spine2
-    400000: //RootNode
+    100052: //RootNode
+    400000: Cube.004
     400002: mixamorig:Head
     400004: mixamorig:HeadTop_End
     400006: mixamorig:Hips
@@ -55,8 +56,12 @@ ModelImporter:
     400046: mixamorig:Spine
     400048: mixamorig:Spine1
     400050: mixamorig:Spine2
+    400052: //RootNode
+    2100000: Material.001
+    4300000: Cube.004
     7400000: mixamo.com
     9500000: //RootNode
+    13700000: Cube.004
   externalObjects: {}
   materials:
     importMaterials: 1
