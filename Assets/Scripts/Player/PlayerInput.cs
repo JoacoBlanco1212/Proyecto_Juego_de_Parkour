@@ -14,6 +14,7 @@ public class PlayerInput : MonoBehaviour
 
     void Update()
     {
+        // It detects if the key Escape is pressed
          if (Input.GetKeyDown(KeyCode.Escape))
         {
             pauseMenu.Pause();
