@@ -75,6 +75,13 @@ public class CharacterControllerScript : MonoBehaviour
     public int climbJumps;
     private int climbJumpsLeft;
 
+    [Header("Landing")]
+    public float fallThreshold;
+    public float lethalFallDistance;
+    public float damageMultiplier;
+    private bool isFalling;
+    private float startY;
+
     [Header("Keybinds")]
     public KeyCode climbKey = KeyCode.Space;
     public KeyCode climbJumpKey = KeyCode.Space;
@@ -133,7 +140,7 @@ public class CharacterControllerScript : MonoBehaviour
         rb.freezeRotation = true;
         rb.drag = groundDrag;
         readyToJump = true;
-
+        isFalling = false;
 
         startYscale = transform.localScale.y;
 
@@ -147,6 +154,9 @@ public class CharacterControllerScript : MonoBehaviour
         wallRunSpeedRequierement = speedLimit * wallRunSpeedRequierementMultiplier;
 
         climbSpeed = speedLimit * climbSpeedMultiplier;
+
+        fallThreshold = startYscale * 2.5f;
+        lethalFallDistance = startYscale * 10f;
     }
 
 
@@ -163,8 +173,10 @@ public class CharacterControllerScript : MonoBehaviour
         WallClimbCheck();
         whenToClimb();
 
-        AdjustGravityAndDrag();
+        checkForFallDmg();
+
         StateHandler();
+        AdjustGravityAndDrag();
     }
 
     private void FixedUpdate()
@@ -636,18 +648,36 @@ public class CharacterControllerScript : MonoBehaviour
 
     private void checkForFallDmg()
     {
-        if (grounded && rb.velocity.y > 4f)
+        //Detect when player starts falling
+        if (!isFalling && !grounded && rb.velocity.y < 0)
         {
-            if (Input.GetKey(landingKey))
+            startY = transform.position.y;
+            isFalling = true;
+        }
+
+        //Detect when player lands
+        if (isFalling && grounded)
+        {
+            float fallDistance = startY - transform.position.y;
+            Debug.Log("Player has fell: " + fallDistance);
+
+            if (fallDistance > fallThreshold)
             {
-                Debug.Log("Fall dmg reduced");
-            }
-            else
-            {
-                Debug.Log("fall dmg not reduced");
+            
+                float damage = (fallDistance - fallThreshold) * damageMultiplier;
+                ApplyDamage(damage);
+                Debug.Log("Dmg taken:" + damage);
             }
 
-            Debug.Log("Fall dmg occurred");
+            isFalling = false;
+        }
+    }
+
+    private void ApplyDamage(float damage)
+    {
+        if (Input.GetKey(landingKey))
+        {
+            Debug.Log("Dmg reduced by landing");
         }
     }
 }
