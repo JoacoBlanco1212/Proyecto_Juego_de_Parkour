@@ -79,8 +79,11 @@ public class CharacterControllerScript : MonoBehaviour
     public float fallThreshold;
     public float lethalFallDistance;
     public float damageMultiplier;
+    public float landingDmgMutiplier;
+    public float perfectLandingLength;
     private bool isFalling;
     private float startY;
+    private bool isPerfectLanding;
 
     [Header("Keybinds")]
     public KeyCode climbKey = KeyCode.Space;
@@ -141,6 +144,7 @@ public class CharacterControllerScript : MonoBehaviour
         rb.drag = groundDrag;
         readyToJump = true;
         isFalling = false;
+        playerHealth = 100f;
 
         startYscale = transform.localScale.y;
 
@@ -653,20 +657,23 @@ public class CharacterControllerScript : MonoBehaviour
         {
             startY = transform.position.y;
             isFalling = true;
+            isPerfectLanding = false;
+        }
+
+        if (isFalling)
+        {
+            CheckPerfectLanding();
         }
 
         //Detect when player lands
         if (isFalling && grounded)
         {
             float fallDistance = startY - transform.position.y;
-            Debug.Log("Player has fell: " + fallDistance);
 
             if (fallDistance > fallThreshold)
             {
-            
                 float damage = (fallDistance - fallThreshold) * damageMultiplier;
                 ApplyDamage(damage);
-                Debug.Log("Dmg taken:" + damage);
             }
 
             isFalling = false;
@@ -675,9 +682,33 @@ public class CharacterControllerScript : MonoBehaviour
 
     private void ApplyDamage(float damage)
     {
-        if (Input.GetKey(landingKey))
+        if (isPerfectLanding)
+        {
+            Debug.Log("Perfect landing!");
+            damage = 0f;
+            //Perfect landing system
+        }
+        else if (Input.GetKey(landingKey))
         {
             Debug.Log("Dmg reduced by landing");
+            damage *= landingDmgMutiplier;
+            playerHealth -= damage;
+        }
+        else
+        {
+            Debug.Log("Didnt reduce dmg");
+        }
+        Debug.Log("Dmg taken:" + damage);
+    }
+
+    private void CheckPerfectLanding()
+    {
+        bool perfectLandingRaycast = Physics.Raycast(groundRayCastPos.position, Vector3.down, perfectLandingLength);
+        Debug.DrawRay(groundRayCastPos.position, Vector3.down * perfectLandingLength, perfectLandingRaycast ? Color.green : Color.red);
+
+        if (Input.GetKeyDown(landingKey) && perfectLandingRaycast)
+        {
+            isPerfectLanding = true;
         }
     }
 }
