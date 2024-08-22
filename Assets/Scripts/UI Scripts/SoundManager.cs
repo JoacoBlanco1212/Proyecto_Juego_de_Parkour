@@ -10,6 +10,9 @@ public class SoundManager : MonoBehaviour
     public static SoundManager Instance;
     public AudioSource sourceSFX;
 
+    public AudioClip SFXtest;
+    public AudioClip mainMenuMusic;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -28,9 +31,5 @@ public class SoundManager : MonoBehaviour
     {
 
     }
-    
-    public void PlaySound(AudioClip clip)
-    {
-        sourceSFX.PlayOneShot(clip);
-    }
+
 }
