@@ -26,7 +26,7 @@ public class Race : MonoBehaviour
             vectorPoint = player.transform.position;
             Checkpoint checkpoint = other.GetComponent<Checkpoint>();
             checkpoint.ActivateNextCheckpoint();
-            Destroy(other.gameObject);
+            other.gameObject.SetActive(false);
         }
        
     }

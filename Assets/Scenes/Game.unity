@@ -269,7 +269,7 @@ RectTransform:
   m_GameObject: {fileID: 270749812}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.0004546871}
-  m_LocalScale: {x: 7.1058, y: 3.573711, z: 4.3372636}
+  m_LocalScale: {x: 7.1058, y: 3.8438835, z: 4.3372636}
   m_Children: []
   m_Father: {fileID: 1071905134}
   m_RootOrder: 0
@@ -564,7 +564,7 @@ GameObject:
   - component: {fileID: 432674900}
   - component: {fileID: 432674899}
   m_Layer: 5
-  m_Name: FinalTime.txt
+  m_Name: YourTime.txt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -601,9 +601,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: '...
-
-'
+  m_Text: 'Your Time:'
 --- !u!222 &432674900
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -628,7 +626,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2.7, y: 32.5}
+  m_AnchoredPosition: {x: -36, y: 34}
   m_SizeDelta: {x: 255.17, y: 55.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &432795180
@@ -643,7 +641,7 @@ GameObject:
   - component: {fileID: 432795183}
   - component: {fileID: 432795182}
   m_Layer: 5
-  m_Name: MenuCarrera
+  m_Name: RaceMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -871,7 +869,7 @@ Transform:
   m_LocalScale: {x: 1.28, y: 1.28, z: 1.28}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &560125677
 MonoBehaviour:
@@ -976,7 +974,7 @@ Transform:
   m_LocalScale: {x: 1.28, y: 1.28, z: 1.28}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &591679341
 MonoBehaviour:
@@ -1025,7 +1023,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.00024414062, y: 0}
+  m_AnchoredPosition: {x: 221, y: 128}
   m_SizeDelta: {x: 115.14, y: 54.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &654128706
@@ -1292,6 +1290,36 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &794988149
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 794988150}
+  m_Layer: 0
+  m_Name: Start Point 2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &794988150
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 794988149}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 11.94, y: 0.79, z: -1.83}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 46915092}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &799384540
 GameObject:
   m_ObjectHideFlags: 0
@@ -1326,7 +1354,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.00024414062, y: 0}
+  m_AnchoredPosition: {x: 2, y: 0}
   m_SizeDelta: {x: 100, y: 54.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &799384542
@@ -1354,7 +1382,7 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 0
     m_MaxSize: 45
-    m_Alignment: 0
+    m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
@@ -1462,8 +1490,8 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 972277032}
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_Father: {fileID: 46915092}
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -2194,7 +2222,7 @@ Transform:
   m_LocalScale: {x: 1.28, y: 1.28, z: 1.28}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1509013890
 MonoBehaviour:
@@ -2249,7 +2277,7 @@ RectTransform:
   m_GameObject: {fileID: 1544674072}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.0004546871}
-  m_LocalScale: {x: 7.1058, y: 3.573711, z: 4.3372636}
+  m_LocalScale: {x: 7.1058, y: 3.8478146, z: 4.3372636}
   m_Children: []
   m_Father: {fileID: 972277032}
   m_RootOrder: 0
@@ -2449,7 +2477,7 @@ Transform:
   m_LocalScale: {x: 60.56667, y: 12.867399, z: 1.01}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1672878168
 GameObject:
@@ -3051,7 +3079,7 @@ PrefabInstance:
     - target: {fileID: 6085853168349242746, guid: 24c47ef8461a5cb4884fc05875362549,
         type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6085853168349242746, guid: 24c47ef8461a5cb4884fc05875362549,
         type: 3}
@@ -3221,10 +3249,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   firstCheckpoint: {fileID: 591679336}
-  racePanel: {fileID: 432795180}
+  raceMenu: {fileID: 432795180}
   player: {fileID: 1838967112}
   playerRigidbody: {fileID: 1838967116}
   startPoint: {fileID: 2044338395}
+  startPoint2: {fileID: 794988150}
   countdownText: {fileID: 799384540}
   raceTimerText: {fileID: 654128704}
   lastCheckpoint: {fileID: 1509013885}
@@ -3489,7 +3518,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2044338395}
   m_Layer: 0
-  m_Name: Start Pointt
+  m_Name: Start Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3507,7 +3536,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 46915092}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2057777221
 GameObject:
@@ -3599,7 +3628,7 @@ Transform:
   m_LocalScale: {x: 1.28, y: 1.28, z: 1.28}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2057777226
 MonoBehaviour:
@@ -3703,7 +3732,7 @@ Transform:
   m_LocalScale: {x: 60.56667, y: 12.867399, z: 1.01}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2147176596
 GameObject:
@@ -3718,7 +3747,7 @@ GameObject:
   - component: {fileID: 2147176598}
   - component: {fileID: 2147176597}
   m_Layer: 5
-  m_Name: CarreraCanva
+  m_Name: RaceCanva
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3800,7 +3829,7 @@ RectTransform:
   - {fileID: 799384541}
   - {fileID: 654128705}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
