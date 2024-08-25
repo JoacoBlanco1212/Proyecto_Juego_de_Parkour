@@ -21,7 +21,7 @@ public class CharacterControllerScript : MonoBehaviour
     float startYscale;
 
     [Header("Sliding")]
-    public float slideTime = 0.5f;
+    public float slideTime;
     public float slideYmultiplier;
     public float slideSpeedRequirementMultiplier;
     public float slideSpeedMultiplier;
@@ -93,6 +93,7 @@ public class CharacterControllerScript : MonoBehaviour
     public KeyCode crouchKey = KeyCode.C;
     public KeyCode slideKey = KeyCode.LeftControl;
     public KeyCode landingKey = KeyCode.LeftShift;
+    public KeyCode switchCameraKey = KeyCode.T;
 
     [Header("Ground check")]
     bool grounded;
@@ -117,6 +118,8 @@ public class CharacterControllerScript : MonoBehaviour
     public Transform orientation;
     public Transform groundRayCastPos;
     public Transform wallRayCastPos;
+    public GameObject firstPersonCamera;
+    public GameObject thirdPersonCamera;
 
     Vector3 moveDirection;
     float verticalInput;
@@ -134,6 +137,13 @@ public class CharacterControllerScript : MonoBehaviour
         wallRunning,
         climbing,
 
+    }
+
+    public CameraState cameraState;
+    public enum CameraState
+    {
+        first,
+        third,
     }
 
     // Start is called before the first frame update
@@ -160,13 +170,16 @@ public class CharacterControllerScript : MonoBehaviour
         climbSpeed = speedLimit * climbSpeedMultiplier;
 
         fallThreshold = startYscale * 2.5f;
-        lethalFallDistance = startYscale * 10f;
+        lethalFallDistance = startYscale * 20f;
+
+        cameraState = CameraState.first;
     }
 
 
     // Update is called once per frame
     void Update()
     {
+        CheckForCameraInput();
         MyInput();
 
         IsGrounded();
@@ -704,11 +717,44 @@ public class CharacterControllerScript : MonoBehaviour
     private void CheckPerfectLanding()
     {
         bool perfectLandingRaycast = Physics.Raycast(groundRayCastPos.position, Vector3.down, perfectLandingLength);
-        Debug.DrawRay(groundRayCastPos.position, Vector3.down * perfectLandingLength, perfectLandingRaycast ? Color.green : Color.red);
+        // Debug.DrawRay(groundRayCastPos.position, Vector3.down * perfectLandingLength, perfectLandingRaycast ? Color.green : Color.red);
 
         if (Input.GetKeyDown(landingKey) && perfectLandingRaycast)
         {
             isPerfectLanding = true;
+        }
+    }
+
+    private void CheckForCameraInput()
+    {
+        if (Input.GetKeyDown(switchCameraKey))
+        {
+            switch (cameraState)
+            {
+                case CameraState.first:
+                    cameraState = CameraState.third;
+                    break;
+
+                case CameraState.third:
+                    cameraState = CameraState.first;
+                    break;
+            }
+            SwitchCameraMode();
+        }
+    }
+    private void SwitchCameraMode()
+    {
+        switch (cameraState)
+        {
+            case CameraState.first:
+                thirdPersonCamera.SetActive(false);
+                firstPersonCamera.SetActive(true);
+                break;
+
+            case CameraState.third:
+                firstPersonCamera.SetActive(false);
+                thirdPersonCamera.SetActive(true);
+                break;
         }
     }
 }
