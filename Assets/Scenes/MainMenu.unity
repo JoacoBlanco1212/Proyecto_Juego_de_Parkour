@@ -4474,8 +4474,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourceSFX: {fileID: 1891508017}
-  SFXtest: {fileID: 0}
   mainMenuMusic: {fileID: 0}
+  worldMusic:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  currentSong: {fileID: 0}
 --- !u!82 &1891508017
 AudioSource:
   m_ObjectHideFlags: 0

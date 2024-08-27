@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CamaraControllerScript : MonoBehaviour
 {
-    public Transform player;
+    public Transform playerOrientation;
     public Vector3 offset;
     public float height;
 
@@ -42,11 +42,11 @@ public class CamaraControllerScript : MonoBehaviour
         xRotationClamped = Mathf.Clamp(xRotation, xRotationMin, xRotationMax);
         targetRotation = Quaternion.Euler(xRotationClamped, yRotation, 0f);
 
-        desiredPos = player.position - targetRotation * offset + Vector3.up * height;
+        desiredPos = playerOrientation.position - targetRotation * offset + Vector3.up * height;
 
         transform.SetPositionAndRotation(desiredPos, targetRotation);
 
         Quaternion playerTargetRotation = Quaternion.Euler(0f, yRotation, 0f);
-        player.rotation = Quaternion.Slerp(player.rotation, playerTargetRotation, Time.deltaTime * 10f);
+        playerOrientation.rotation = Quaternion.Slerp(playerOrientation.rotation, playerTargetRotation, Time.deltaTime * 10f);
     }
 }
