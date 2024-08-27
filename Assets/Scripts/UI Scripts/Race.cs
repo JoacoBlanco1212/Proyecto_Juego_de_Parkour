@@ -6,10 +6,14 @@ using UnityEngine;
 public class Race : MonoBehaviour
 {
 
-    [SerializeField] GameObject player;
-    [SerializeField] List<GameObject> checkPoints;
-    [SerializeField] Vector3 vectorPoint;
+    private GameObject player;
+    private Vector3 vectorPoint;
     [SerializeField] float dead;
+
+    private void Start()
+    {
+        player = gameObject;
+    }
 
     void Update()
     {
