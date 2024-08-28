@@ -4475,12 +4475,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sourceSFX: {fileID: 1891508017}
   mainMenuMusic: {fileID: 0}
-  worldMusic:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  worldMusic: []
   currentSong: {fileID: 0}
 --- !u!82 &1891508017
 AudioSource:
