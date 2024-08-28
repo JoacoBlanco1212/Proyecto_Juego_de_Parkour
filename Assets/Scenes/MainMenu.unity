@@ -4474,7 +4474,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sourceSFX: {fileID: 1891508017}
-  mainMenuMusic: {fileID: 0}
   worldMusic:
   - {fileID: 0}
   - {fileID: 0}
@@ -4494,10 +4493,10 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 243817846337794272, guid: a9e426e8b00f69a46b9bb3f31969d7e8,
     type: 2}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
