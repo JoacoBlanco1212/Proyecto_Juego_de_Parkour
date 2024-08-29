@@ -96,6 +96,7 @@ public class CharacterControllerScript : MonoBehaviour
     public KeyCode switchCameraKey = KeyCode.T;
 
     [Header("Ground check")]
+    public float rayLength = 0.3f;
     bool grounded;
 
     [Header("Slope handler")]
@@ -120,6 +121,7 @@ public class CharacterControllerScript : MonoBehaviour
     public Transform wallRayCastPos;
     public GameObject firstPersonCamera;
     public GameObject thirdPersonCamera;
+    public PlayerSFXManager pSFX;
 
     Vector3 moveDirection;
     float verticalInput;
@@ -213,7 +215,6 @@ public class CharacterControllerScript : MonoBehaviour
     private void IsGrounded()
     {
         //Ground check
-        float rayLength = 0.3f;
         grounded = Physics.Raycast(groundRayCastPos.position, Vector3.down, rayLength);
         // Debug.DrawRay(groundRayCastPos.position, Vector3.down * rayLength, grounded ? Color.green : Color.red);
     }
@@ -310,6 +311,8 @@ public class CharacterControllerScript : MonoBehaviour
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+
+        // Call jumpSFX function
     }
 
     private void ResetJump()
@@ -329,11 +332,15 @@ public class CharacterControllerScript : MonoBehaviour
             //State: Wallrunning
             state = MovementState.wallRunning;
             moveSpeed = wallRunSpeed;
+
+            // Call wallRunSFX function
         }
         else if (isClimbing)
         {
             //State: Climbing
             state = MovementState.climbing;
+
+            // Call climbSFX function
         }
         else if (IsCrouching && grounded)
         {
@@ -346,12 +353,17 @@ public class CharacterControllerScript : MonoBehaviour
             //State: Sliding
             state = MovementState.sliding;
             moveSpeed = slideSpeed;
+
+            // Call slideSFX function
         }
         else if (grounded)
         {
             // State: Sprinting
             state = MovementState.sprinting;
             moveSpeed = sprintSpeed;
+
+            // Call sprintSFX function
+            pSFX.PlaySprintSFX();
         }
         else if (!grounded)
         {
@@ -700,16 +712,22 @@ public class CharacterControllerScript : MonoBehaviour
             Debug.Log("Perfect landing!");
             damage = 0f;
             //Perfect landing system
+
+            // Call perfectLandingSFX function
         }
         else if (Input.GetKey(landingKey))
         {
             Debug.Log("Dmg reduced by landing");
             damage *= landingDmgMutiplier;
             playerHealth -= damage;
+
+            // Call landingSFX function
         }
         else
         {
             Debug.Log("Didnt reduce dmg");
+
+            // Call brokenLegsSFX function
         }
         Debug.Log("Dmg taken:" + damage);
     }
@@ -742,6 +760,7 @@ public class CharacterControllerScript : MonoBehaviour
             SwitchCameraMode();
         }
     }
+
     private void SwitchCameraMode()
     {
         switch (cameraState)

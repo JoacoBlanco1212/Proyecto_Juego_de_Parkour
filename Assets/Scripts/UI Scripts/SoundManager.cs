@@ -9,9 +9,8 @@ using UnityEngine.SceneManagement;
 public class SoundManager : MonoBehaviour
 {
     public static SoundManager Instance;
-    public AudioSource sourceSFX;
+    public AudioSource sourceMusic;
 
-    public AudioClip mainMenuMusic;
     public AudioClip[] worldMusic;
 
     public AudioClip currentSong;
@@ -30,16 +29,9 @@ public class SoundManager : MonoBehaviour
         DontDestroyOnLoad(this);
     }
 
-    public void PlayMenuMusic()
-    {
-        sourceSFX.clip = mainMenuMusic;
-        sourceSFX.loop = true;
-        sourceSFX.PlayOneShot(mainMenuMusic);
-    }
-
     private void Start()
     {
-        PlayMenuMusic();
+        sourceMusic.loop = false;
     }
 
     void Update()
@@ -47,25 +39,21 @@ public class SoundManager : MonoBehaviour
         whenToChangeSong();
     }
     public void whenToChangeSong()
-    {
-        if (SceneManager.GetActiveScene().name == "Game")
+    { 
+        if (!sourceMusic.isPlaying)
         {
-            if (!sourceSFX.isPlaying)
-            {
-                SetRandomOnPlaylist();
-            }
+            SetRandomOnPlaylist();
         }
     }
     public void SetRandomOnPlaylist()
     {
-        int rng = Random.Range(0, worldMusic.Length - 1);
+        int rng = Random.Range(0, worldMusic.Length);
         currentSong = worldMusic[rng];
-        PlayWorldMusic();
+        PlayWorldMusic(currentSong);
     }
-    public void PlayWorldMusic()
+    public void PlayWorldMusic(AudioClip clip)
     {
-        sourceSFX.clip = currentSong;
-        sourceSFX.loop = false;
-        sourceSFX.PlayOneShot(currentSong);
+        sourceMusic.clip = clip;
+        sourceMusic.Play();
     }
 }
