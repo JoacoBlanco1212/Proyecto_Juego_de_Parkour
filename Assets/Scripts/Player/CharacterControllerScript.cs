@@ -97,7 +97,11 @@ public class CharacterControllerScript : MonoBehaviour
 
     [Header("Ground check")]
     public float rayLength = 0.3f;
-    bool grounded;
+    bool groundedGeneral;
+    bool groundedTL;
+    bool groundedTR;
+    bool groundedDL;
+    bool groundedDR;
 
     [Header("Slope handler")]
     public float maxSlopeAngle;
@@ -118,6 +122,10 @@ public class CharacterControllerScript : MonoBehaviour
     [Header("References")]
     public Transform orientation;
     public Transform groundRayCastPos;
+    public Transform groundTLRayCastPos;
+    public Transform groundTRRayCastPos;
+    public Transform groundDLRayCastPos;
+    public Transform groundDRRayCastPos;
     public Transform wallRayCastPos;
     public GameObject firstPersonCamera;
     public GameObject thirdPersonCamera;
@@ -157,6 +165,7 @@ public class CharacterControllerScript : MonoBehaviour
         readyToJump = true;
         isFalling = false;
         playerHealth = 100f;
+        groundedGeneral = false;
 
         startYscale = transform.localScale.y;
 
@@ -215,8 +224,23 @@ public class CharacterControllerScript : MonoBehaviour
     private void IsGrounded()
     {
         //Ground check
-        grounded = Physics.Raycast(groundRayCastPos.position, Vector3.down, rayLength);
-        // Debug.DrawRay(groundRayCastPos.position, Vector3.down * rayLength, grounded ? Color.green : Color.red);
+
+        groundedTL = Physics.Raycast(groundTLRayCastPos.position, Vector3.down, rayLength);
+        // Debug.DrawRay(groundTLRayCastPos.position, Vector3.down * rayLength, groundedTL ? Color.green : Color.red);
+        groundedTR = Physics.Raycast(groundTRRayCastPos.position, Vector3.down, rayLength);
+        // Debug.DrawRay(groundTRRayCastPos.position, Vector3.down * rayLength, groundedTR ? Color.green : Color.red);
+        groundedDL = Physics.Raycast(groundDLRayCastPos.position, Vector3.down, rayLength);
+        // Debug.DrawRay(groundDLRayCastPos.position, Vector3.down * rayLength, groundedDL ? Color.green : Color.red);
+        groundedDR = Physics.Raycast(groundDRRayCastPos.position, Vector3.down, rayLength);
+        // Debug.DrawRay(groundDRRayCastPos.position, Vector3.down * rayLength, groundedDR ? Color.green : Color.red);
+
+        if (groundedTL || groundedTR || groundedDL || groundedDR) 
+        {
+            groundedGeneral = true;
+        } else
+        {
+            groundedGeneral = false;
+        }
     }
 
     private void MovePlayer()
@@ -238,7 +262,7 @@ public class CharacterControllerScript : MonoBehaviour
             rb.AddForce(moveDirection.normalized * slideSpeed, ForceMode.Acceleration);
         }
         //On ground
-        else if (grounded)
+        else if (groundedGeneral)
         {
             rb.AddForce(moveDirection.normalized * moveSpeed, ForceMode.Acceleration);
         } 
@@ -256,7 +280,7 @@ public class CharacterControllerScript : MonoBehaviour
         verticalInput = Input.GetAxis("Vertical");
 
         //When to jump
-        if (Input.GetKeyDown(jumpKey) && readyToJump && grounded && (state != MovementState.crouching && state != MovementState.sliding))
+        if (Input.GetKeyDown(jumpKey) && readyToJump && groundedGeneral && (state != MovementState.crouching && state != MovementState.sliding))
         {
             readyToJump = false;
 
@@ -342,13 +366,13 @@ public class CharacterControllerScript : MonoBehaviour
 
             // Call climbSFX function
         }
-        else if (IsCrouching && grounded)
+        else if (IsCrouching && groundedGeneral)
         {
             // State: Crouching
             state = MovementState.crouching;
             moveSpeed = crouchingSpeed;
         }
-        else if (IsSliding && grounded)
+        else if (IsSliding && groundedGeneral)
         {
             //State: Sliding
             state = MovementState.sliding;
@@ -356,7 +380,7 @@ public class CharacterControllerScript : MonoBehaviour
 
             // Call slideSFX function
         }
-        else if (grounded)
+        else if (groundedGeneral)
         {
             // State: Sprinting
             state = MovementState.sprinting;
@@ -365,7 +389,7 @@ public class CharacterControllerScript : MonoBehaviour
             // Call sprintSFX function
             pSFX.PlaySprintSFX();
         }
-        else if (!grounded)
+        else if (!groundedGeneral)
         {
             // State: Air
             state = MovementState.air;
@@ -473,7 +497,7 @@ public class CharacterControllerScript : MonoBehaviour
     private bool AboveGround()
     {
         
-        return !grounded;
+        return !groundedGeneral;
     }
 
     private void whenToWallRun()
@@ -604,7 +628,7 @@ public class CharacterControllerScript : MonoBehaviour
 
         wallLookAngle = Vector3.Angle(orientation.forward, -frontWallHit.normal);
         
-        if (grounded)
+        if (groundedGeneral)
         {
             climbTimer = maxClimbTime;
             climbJumpsLeft = climbJumps;
@@ -633,7 +657,7 @@ public class CharacterControllerScript : MonoBehaviour
         }
 
         //State: ClimbJump
-        else if (wallFront && Input.GetKeyUp(climbJumpKey) && climbJumpsLeft > 0 && !grounded && isClimbing)
+        else if (wallFront && Input.GetKeyUp(climbJumpKey) && climbJumpsLeft > 0 && !groundedGeneral && isClimbing)
         {
             ClimbJump();
         }
@@ -678,7 +702,7 @@ public class CharacterControllerScript : MonoBehaviour
     private void checkForFallDmg()
     {
         //Detect when player starts falling
-        if (!isFalling && !grounded && rb.velocity.y < 0)
+        if (!isFalling && !groundedGeneral && rb.velocity.y < 0)
         {
             startY = transform.position.y;
             isFalling = true;
@@ -691,7 +715,7 @@ public class CharacterControllerScript : MonoBehaviour
         }
 
         //Detect when player lands
-        if (isFalling && grounded)
+        if (isFalling && groundedGeneral)
         {
             float fallDistance = startY - transform.position.y;
 
@@ -729,7 +753,7 @@ public class CharacterControllerScript : MonoBehaviour
 
             // Call brokenLegsSFX function
         }
-        Debug.Log("Dmg taken:" + damage);
+        // Debug.Log("Dmg taken:" + damage);
     }
 
     private void CheckPerfectLanding()

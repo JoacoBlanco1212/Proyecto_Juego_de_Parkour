@@ -23,6 +23,11 @@ public class CamaraControllerScript : MonoBehaviour
 
     public Vector3 desiredPos;
 
+    public LayerMask collisionLayers;
+    public float collisionRadius = 0.2f;
+    public float cameraCollisionOffset = 0.2f; 
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,6 +48,15 @@ public class CamaraControllerScript : MonoBehaviour
         targetRotation = Quaternion.Euler(xRotationClamped, yRotation, 0f);
 
         desiredPos = playerOrientation.position - targetRotation * offset + Vector3.up * height;
+
+        RaycastHit hit;
+        bool cameraCollision = Physics.SphereCast(playerOrientation.position, collisionRadius, desiredPos - playerOrientation.position, out hit, offset.magnitude);
+        // Debug.DrawRay(playerOrientation.position, (desiredPos - playerOrientation.position) * offset.magnitude, cameraCollision ? Color.green : Color.red);
+        if (cameraCollision)
+        {
+            // If a collision is detected, adjust the camera position to avoid clipping
+            desiredPos = hit.point + hit.normal * cameraCollisionOffset;
+        }
 
         transform.SetPositionAndRotation(desiredPos, targetRotation);
 
