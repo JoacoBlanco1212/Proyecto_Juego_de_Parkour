@@ -25,6 +25,7 @@ public class Race : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("Triggered by: " + other.gameObject.name);
         if (other.CompareTag("Checkpoint"))
         {
             vectorPoint = player.transform.position;
