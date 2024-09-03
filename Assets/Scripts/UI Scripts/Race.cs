@@ -13,6 +13,7 @@ public class Race : MonoBehaviour
     private void Start()
     {
         player = gameObject;
+        vectorPoint = player.transform.position;
     }
 
     void Update()
@@ -25,12 +26,12 @@ public class Race : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Triggered by: " + other.gameObject.name);
-        if (other.CompareTag("Checkpoint"))
+         if (other.CompareTag("Checkpoint"))
         {
             vectorPoint = player.transform.position;
             Checkpoint checkpoint = other.GetComponent<Checkpoint>();
             checkpoint.ActivateNextCheckpoint();
+            vectorPoint = checkpoint.transform.position;
             other.gameObject.SetActive(false);
         }
        
