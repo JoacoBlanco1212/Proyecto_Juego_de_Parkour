@@ -272,6 +272,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!114 &221896665 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1624166041931872989, guid: 1bbfa66bd8e0f1a4bb6bb8430ff99b20,
+    type: 3}
+  m_PrefabInstance: {fileID: 4054870171061279491}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aa70063995cb8541919fe29d6da056f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &225324521
 GameObject:
   m_ObjectHideFlags: 0
@@ -1559,6 +1571,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1624166041931872989, guid: 1bbfa66bd8e0f1a4bb6bb8430ff99b20,
+        type: 3}
+      propertyPath: targetPOV
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 1624166041931872989, guid: 1bbfa66bd8e0f1a4bb6bb8430ff99b20,
+        type: 3}
+      propertyPath: fovSpeed
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1624166041931872989, guid: 1bbfa66bd8e0f1a4bb6bb8430ff99b20,
+        type: 3}
+      propertyPath: tiltAngle
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1624166041931872989, guid: 1bbfa66bd8e0f1a4bb6bb8430ff99b20,
+        type: 3}
+      propertyPath: firstPersonCamera
+      value: 
+      objectReference: {fileID: 4054870171061279492}
     - target: {fileID: 4054870170827236381, guid: 1bbfa66bd8e0f1a4bb6bb8430ff99b20,
         type: 3}
       propertyPath: m_Name
@@ -1619,5 +1651,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6786680762989564395, guid: 1bbfa66bd8e0f1a4bb6bb8430ff99b20,
+        type: 3}
+      propertyPath: fpCamSp
+      value: 
+      objectReference: {fileID: 221896665}
+    - target: {fileID: 6786680762989564395, guid: 1bbfa66bd8e0f1a4bb6bb8430ff99b20,
+        type: 3}
+      propertyPath: walkSpeedMutiplier
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8265504159458280428, guid: 1bbfa66bd8e0f1a4bb6bb8430ff99b20,
+        type: 3}
+      propertyPath: field of view
+      value: 60
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1bbfa66bd8e0f1a4bb6bb8430ff99b20, type: 3}
+--- !u!20 &4054870171061279492 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 8265504159458280428, guid: 1bbfa66bd8e0f1a4bb6bb8430ff99b20,
+    type: 3}
+  m_PrefabInstance: {fileID: 4054870171061279491}
+  m_PrefabAsset: {fileID: 0}

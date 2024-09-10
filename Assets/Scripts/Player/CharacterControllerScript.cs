@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class CharacterControllerScript : MonoBehaviour
 {
-    [Header("Sprinting")]
+    [Header("Basic Movement")]
     public float sprintSpeed;
+    public float walkSpeedMutiplier;
     public float groundDrag;
 
     [Header("Jumping")]
@@ -62,7 +63,7 @@ public class CharacterControllerScript : MonoBehaviour
     public float climbDetectionLength;
     public float sphereCastRadius;
     public float maxWallLookAngle;
-    
+
     private float wallLookAngle;
     private RaycastHit frontWallHit;
     private bool wallFront;
@@ -94,6 +95,7 @@ public class CharacterControllerScript : MonoBehaviour
     public KeyCode slideKey = KeyCode.LeftControl;
     public KeyCode landingKey = KeyCode.LeftShift;
     public KeyCode switchCameraKey = KeyCode.T;
+    public KeyCode sprintKey = KeyCode.LeftShift;
 
     [Header("Ground check")]
     public float rayLength = 0.3f;
@@ -109,6 +111,7 @@ public class CharacterControllerScript : MonoBehaviour
 
     [Header("Player info")]
     public float moveSpeed;
+    public float walkSpeed;
     public float speedLimit;
     public float crouchingSpeed;
     public float airSpeed;
@@ -117,7 +120,12 @@ public class CharacterControllerScript : MonoBehaviour
     public float wallRunSpeed;
     public float wallRunSpeedRequierement;
     public float climbSpeed;
+    public float counterDrag;
+    public float rbStartDrag;
+
+    [Header("Player atributes")]
     public float playerHealth;
+
 
     [Header("References")]
     public Transform orientation;
@@ -130,6 +138,7 @@ public class CharacterControllerScript : MonoBehaviour
     public GameObject firstPersonCamera;
     public GameObject thirdPersonCamera;
     public PlayerSFXManager pSFX;
+    public PlayerCam fpCamSp;
 
     Vector3 moveDirection;
     float verticalInput;
@@ -140,6 +149,7 @@ public class CharacterControllerScript : MonoBehaviour
     public enum MovementState
     {
         idle,
+        walking,
         sprinting,
         crouching,
         air,
@@ -170,11 +180,11 @@ public class CharacterControllerScript : MonoBehaviour
         startYscale = transform.localScale.y;
 
         moveSpeed = sprintSpeed;
+        walkSpeed = speedLimit * walkSpeedMutiplier;
         crouchingSpeed = speedLimit * crouchSpeedMultiplier;
         airSpeed = moveSpeed * airMultiplier;
         slideSpeed = moveSpeed * slideSpeedMultiplier;
         slideSpeedRequirement = speedLimit * slideSpeedRequirementMultiplier;
-
         wallRunSpeed = moveSpeed * wallRunSpeedMultiplier;
         wallRunSpeedRequierement = speedLimit * wallRunSpeedRequierementMultiplier;
 
@@ -184,6 +194,9 @@ public class CharacterControllerScript : MonoBehaviour
         lethalFallDistance = startYscale * 20f;
 
         cameraState = CameraState.first;
+
+        counterDrag = groundDrag * 3.5f;
+        rbStartDrag = rb.drag;
     }
 
 
@@ -234,7 +247,7 @@ public class CharacterControllerScript : MonoBehaviour
         groundedDR = Physics.Raycast(groundDRRayCastPos.position, Vector3.down, rayLength);
         // Debug.DrawRay(groundDRRayCastPos.position, Vector3.down * rayLength, groundedDR ? Color.green : Color.red);
 
-        if (groundedTL || groundedTR || groundedDL || groundedDR) 
+        if (groundedTL || groundedTR || groundedDL || groundedDR)
         {
             groundedGeneral = true;
         } else
@@ -246,30 +259,49 @@ public class CharacterControllerScript : MonoBehaviour
     private void MovePlayer()
     {
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+
         //On slope
         if (OnSlope())
         {
             rb.AddForce(GetSlopeMoveDirection() * moveSpeed, ForceMode.Acceleration);
         }
         //Crouching
-        else if(state == MovementState.crouching)
+        else if (state == MovementState.crouching)
         {
-            rb.velocity = new Vector3 (moveDirection.x * crouchingSpeed, 0f, moveDirection.z * crouchingSpeed);
+            rb.velocity = new Vector3(moveDirection.x * crouchingSpeed, 0f, moveDirection.z * crouchingSpeed);
         }
         //Sliding
         else if (state == MovementState.sliding)
         {
             rb.AddForce(moveDirection.normalized * slideSpeed, ForceMode.Acceleration);
         }
-        //On ground
-        else if (groundedGeneral)
+        //Sprinting
+        else if (groundedGeneral && Input.GetKey(sprintKey))
         {
             rb.AddForce(moveDirection.normalized * moveSpeed, ForceMode.Acceleration);
-        } 
+            AddCounterDragToRB();
+        }
+        //Walking
+        else if (groundedGeneral)
+        {
+            rb.velocity = new Vector3(moveDirection.x * walkSpeed, 0f, moveDirection.z * walkSpeed);
+        }
         //On air
         else if (state == MovementState.air)
         {
             rb.AddForce(moveDirection.normalized * airSpeed, ForceMode.Acceleration);
+        }
+    }
+
+    private void AddCounterDragToRB()
+    {
+        if (Mathf.Abs(horizontalInput) < 0.8f && Mathf.Abs(verticalInput) < 0.8f && rb.velocity.magnitude > 0.01f)
+        {
+            rb.drag = counterDrag;
+        } 
+        else if (horizontalInput != 0 || verticalInput != 0)
+        {
+            rb.drag = rbStartDrag;
         }
     }
 
@@ -380,7 +412,7 @@ public class CharacterControllerScript : MonoBehaviour
 
             // Call slideSFX function
         }
-        else if (groundedGeneral)
+        else if (groundedGeneral && Input.GetKey(sprintKey))
         {
             // State: Sprinting
             state = MovementState.sprinting;
@@ -388,6 +420,12 @@ public class CharacterControllerScript : MonoBehaviour
 
             // Call sprintSFX function
             pSFX.PlaySprintSFX();
+        }
+        else if (groundedGeneral)
+        {
+            //State: Walking
+            state = MovementState.walking;
+            moveSpeed = walkSpeed;
         }
         else if (!groundedGeneral)
         {
@@ -549,6 +587,8 @@ public class CharacterControllerScript : MonoBehaviour
             if (isWallRun)
             {
                 StopWallRunning();
+
+                
             }
         }
     }
@@ -590,14 +630,19 @@ public class CharacterControllerScript : MonoBehaviour
         {
             rb.AddForce(transform.up * gravityCounterForce, ForceMode.Force);
         }
+
+        // Camera effects
+        // fpCamSp.StartWallRunEffects();
     }
 
     private void StopWallRunning()
     {
         isWallRun = false;
         rb.useGravity = true;
-    } 
-    
+        //End camera effects
+        // fpCamSp.EndWallRunEffects();
+    }
+
     private void wallJump()
     {
         //Enter exiting wall state

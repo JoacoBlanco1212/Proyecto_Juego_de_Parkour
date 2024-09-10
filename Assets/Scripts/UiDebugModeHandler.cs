@@ -7,6 +7,7 @@ public class UiDebugModeHandler : MonoBehaviour
 {
     public Text speedText;
 
+
     public GameObject player;
     CharacterControllerScript playerScript;
 
