@@ -87,15 +87,15 @@ public class CharacterControllerScript : MonoBehaviour
     private bool isPerfectLanding;
 
     [Header("Keybinds")]
-    public KeyCode climbKey = KeyCode.Space;
-    public KeyCode climbJumpKey = KeyCode.Space;
-    public KeyCode wallJumpKey = KeyCode.Space;
-    public KeyCode jumpKey = KeyCode.Space;
-    public KeyCode crouchKey = KeyCode.C;
-    public KeyCode slideKey = KeyCode.LeftControl;
-    public KeyCode landingKey = KeyCode.LeftShift;
-    public KeyCode switchCameraKey = KeyCode.T;
-    public KeyCode sprintKey = KeyCode.LeftShift;
+    public KeyCode climbKey;
+    public KeyCode climbJumpKey;
+    public KeyCode wallJumpKey;
+    public KeyCode jumpKey;
+    public KeyCode crouchKey;
+    public KeyCode slideKey;
+    public KeyCode landingKey;
+    public KeyCode switchCameraKey;
+    public KeyCode sprintKey;
 
     [Header("Ground check")]
     public float rayLength = 0.3f;
@@ -284,7 +284,7 @@ public class CharacterControllerScript : MonoBehaviour
         //Walking
         else if (groundedGeneral)
         {
-            rb.velocity = new Vector3(moveDirection.x * walkSpeed, 0f, moveDirection.z * walkSpeed);
+            rb.velocity = new Vector3(moveDirection.x * walkSpeed, rb.velocity.y, moveDirection.z * walkSpeed);
         }
         //On air
         else if (state == MovementState.air)
@@ -295,13 +295,16 @@ public class CharacterControllerScript : MonoBehaviour
 
     private void AddCounterDragToRB()
     {
-        if (Mathf.Abs(horizontalInput) < 0.8f && Mathf.Abs(verticalInput) < 0.8f && rb.velocity.magnitude > 0.01f)
+        if (state != MovementState.walking)
         {
-            rb.drag = counterDrag;
-        } 
-        else if (horizontalInput != 0 || verticalInput != 0)
-        {
-            rb.drag = rbStartDrag;
+            if (Mathf.Abs(horizontalInput) < 0.8f && Mathf.Abs(verticalInput) < 0.8f && rb.velocity.magnitude > 0.01f)
+            {
+                rb.drag = counterDrag;
+            }
+            else if (horizontalInput != 0 || verticalInput != 0)
+            {
+                rb.drag = rbStartDrag;
+            }
         }
     }
 
@@ -322,7 +325,7 @@ public class CharacterControllerScript : MonoBehaviour
         }
 
         //Start crouching
-        if (Input.GetKeyDown(crouchKey) && state != MovementState.air && state != MovementState.wallRunning)
+        if (Input.GetKeyDown(crouchKey) && state == MovementState.walking)
         {
             transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y * crouchYmultiplier, transform.localScale.z);
             // rb.AddForce(Vector3.up * 2f, ForceMode.Impulse);
@@ -488,7 +491,7 @@ public class CharacterControllerScript : MonoBehaviour
     private bool CanSlide()
     {
         Vector2 flatVel = new Vector2(rb.velocity.x, rb.velocity.z);
-        if (flatVel.magnitude > slideSpeedRequirement && state != MovementState.air && state != MovementState.crouching)
+        if (flatVel.magnitude > slideSpeedRequirement && state == MovementState.sprinting)
         {
             return true;
         }
