@@ -1640,6 +1640,11 @@ PrefabInstance:
       propertyPath: wallRunSpeedMultiplier
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 2420712962991994201, guid: 7bb29d10d57bbef46b968ae5d576710e,
+        type: 3}
+      propertyPath: lethalFallDistance
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 2769979802617596399, guid: 7bb29d10d57bbef46b968ae5d576710e,
         type: 3}
       propertyPath: m_LocalPosition.x
