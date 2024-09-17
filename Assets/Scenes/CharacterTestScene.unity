@@ -427,7 +427,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 521102049}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: a0cec461525462248a5d0b6abb6a3f14, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -492,6 +492,51 @@ Transform:
   m_Father: {fileID: 1348551577}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &813269227
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 813269228}
+  - component: {fileID: 813269229}
+  m_Layer: 0
+  m_Name: WallFrictionObj
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &813269228
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 813269227}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1683162176}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &813269229
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 813269227}
+  m_Material: {fileID: 13400000, guid: a0cec461525462248a5d0b6abb6a3f14, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 1.8665884
+  m_Direction: 1
+  m_Center: {x: 0, y: -0.0100106, z: 0}
 --- !u!1 &826321019
 GameObject:
   m_ObjectHideFlags: 0
@@ -986,6 +1031,12 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1608868988}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &1683162176 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4934173024493460688, guid: 7bb29d10d57bbef46b968ae5d576710e,
+    type: 3}
+  m_PrefabInstance: {fileID: 5184471381655764913}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1709269553
 GameObject:
   m_ObjectHideFlags: 0
@@ -1559,6 +1610,41 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2420712962991994201, guid: 7bb29d10d57bbef46b968ae5d576710e,
+        type: 3}
+      propertyPath: landingKey
+      value: 306
+      objectReference: {fileID: 0}
+    - target: {fileID: 2420712962991994201, guid: 7bb29d10d57bbef46b968ae5d576710e,
+        type: 3}
+      propertyPath: playerHealth
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2420712962991994201, guid: 7bb29d10d57bbef46b968ae5d576710e,
+        type: 3}
+      propertyPath: startHP
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2420712962991994201, guid: 7bb29d10d57bbef46b968ae5d576710e,
+        type: 3}
+      propertyPath: HPRegenAmount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2420712962991994201, guid: 7bb29d10d57bbef46b968ae5d576710e,
+        type: 3}
+      propertyPath: HPRegenRate
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2420712962991994201, guid: 7bb29d10d57bbef46b968ae5d576710e,
+        type: 3}
+      propertyPath: wallRunSpeedMultiplier
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2420712962991994201, guid: 7bb29d10d57bbef46b968ae5d576710e,
+        type: 3}
+      propertyPath: lethalFallDistance
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 2769979802617596399, guid: 7bb29d10d57bbef46b968ae5d576710e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1613,6 +1699,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3660202063379688301, guid: 7bb29d10d57bbef46b968ae5d576710e,
+        type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5184471381891760303, guid: 7bb29d10d57bbef46b968ae5d576710e,
         type: 3}

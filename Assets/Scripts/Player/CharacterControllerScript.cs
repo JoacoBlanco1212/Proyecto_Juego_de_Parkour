@@ -50,8 +50,10 @@ public class CharacterControllerScript : MonoBehaviour
     private float exitWallTimer;
 
     [Header("WallRun gravity")]
-    public bool useGravity;
-    public float gravityCounterForce;
+    private float entryVelocityY;
+    private float gravity = 9.8f; 
+    private float halfDuration;
+    private float currentTime;
 
     [Header("Climbing")]
     public float climbSpeedMultiplier;
@@ -109,6 +111,12 @@ public class CharacterControllerScript : MonoBehaviour
     public float maxSlopeAngle;
     RaycastHit slopeHit;
 
+    [Header("HP Regen system")]
+    public float HPRegenRate;
+    public float HPRegenAmount;
+    public float startHP;
+    private bool canRegen;
+
     [Header("Player info")]
     public float moveSpeed;
     public float walkSpeed;
@@ -125,6 +133,7 @@ public class CharacterControllerScript : MonoBehaviour
 
     [Header("Player atributes")]
     public float playerHealth;
+   
 
 
     [Header("References")]
@@ -174,8 +183,9 @@ public class CharacterControllerScript : MonoBehaviour
         rb.drag = groundDrag;
         readyToJump = true;
         isFalling = false;
-        playerHealth = 100f;
         groundedGeneral = false;
+        playerHealth = startHP;
+        canRegen = true;
 
         startYscale = transform.localScale.y;
 
@@ -187,7 +197,6 @@ public class CharacterControllerScript : MonoBehaviour
         slideSpeedRequirement = speedLimit * slideSpeedRequirementMultiplier;
         wallRunSpeed = moveSpeed * wallRunSpeedMultiplier;
         wallRunSpeedRequierement = speedLimit * wallRunSpeedRequierementMultiplier;
-
         climbSpeed = speedLimit * climbSpeedMultiplier;
 
         fallThreshold = startYscale * 2.5f;
@@ -215,6 +224,7 @@ public class CharacterControllerScript : MonoBehaviour
         whenToClimb();
 
         checkForFallDmg();
+        CheckForHPRegen();
 
         StateHandler();
         AdjustGravityAndDrag();
@@ -263,33 +273,33 @@ public class CharacterControllerScript : MonoBehaviour
         //On slope
         if (OnSlope())
         {
-            rb.AddForce(GetSlopeMoveDirection() * moveSpeed, ForceMode.Acceleration);
+            rb.AddForce(GetSlopeMoveDirection() * moveSpeed * CalculateSpeedReductionFromHP(), ForceMode.Acceleration);
         }
         //Crouching
         else if (state == MovementState.crouching)
         {
-            rb.velocity = new Vector3(moveDirection.x * crouchingSpeed, 0f, moveDirection.z * crouchingSpeed);
+            rb.velocity = new Vector3(moveDirection.x * crouchingSpeed * CalculateSpeedReductionFromHP(), 0f, moveDirection.z * crouchingSpeed * CalculateSpeedReductionFromHP());
         }
         //Sliding
         else if (state == MovementState.sliding)
         {
-            rb.AddForce(moveDirection.normalized * slideSpeed, ForceMode.Acceleration);
+            rb.AddForce(moveDirection.normalized * slideSpeed * CalculateSpeedReductionFromHP(), ForceMode.Acceleration);
         }
         //Sprinting
         else if (groundedGeneral && Input.GetKey(sprintKey))
         {
-            rb.AddForce(moveDirection.normalized * moveSpeed, ForceMode.Acceleration);
+            rb.AddForce(moveDirection.normalized * moveSpeed * CalculateSpeedReductionFromHP(), ForceMode.Acceleration);
             AddCounterDragToRB();
         }
         //Walking
         else if (groundedGeneral)
         {
-            rb.velocity = new Vector3(moveDirection.x * walkSpeed, rb.velocity.y, moveDirection.z * walkSpeed);
+            rb.velocity = new Vector3(moveDirection.x * walkSpeed * CalculateSpeedReductionFromHP(), rb.velocity.y, moveDirection.z * walkSpeed * CalculateSpeedReductionFromHP());
         }
         //On air
         else if (state == MovementState.air)
         {
-            rb.AddForce(moveDirection.normalized * airSpeed, ForceMode.Acceleration);
+            rb.AddForce(moveDirection.normalized * airSpeed * CalculateSpeedReductionFromHP(), ForceMode.Acceleration);
         }
     }
 
@@ -369,7 +379,7 @@ public class CharacterControllerScript : MonoBehaviour
         //Reset y vel
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
-        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+        rb.AddForce(transform.up * jumpForce * CalculateSpeedReductionFromHP(), ForceMode.Impulse);
 
         // Call jumpSFX function
     }
@@ -600,17 +610,17 @@ public class CharacterControllerScript : MonoBehaviour
     {
         isWallRun = true;
         wallRunTimer = maxWallRunTime;
-
-
+        StartParabolicWallRun();
     }
 
     private void WallRunningMovement()
     {
-        rb.useGravity = useGravity;
-        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        rb.useGravity = false;
+        // rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        
         Vector3 wallNormal = wallRight ? rightWallHit.normal : leftWallHit.normal;
         Vector3 wallForward = Vector3.zero;
-
+        
         if (wallRight)
         {
             wallForward = Vector3.Cross(transform.up, wallNormal);
@@ -621,7 +631,8 @@ public class CharacterControllerScript : MonoBehaviour
         }
 
         //Wallrun force
-        rb.AddForce(wallForward * wallRunSpeed, ForceMode.Acceleration);
+        rb.AddForce(wallForward * wallRunSpeed * CalculateSpeedReductionFromHP(), ForceMode.Acceleration);
+        UpdateParabolicYTrajectory();
 
         //Push player to wall for curve walls
         if (!(wallLeft && horizontalInput > 0) && !(wallRight && horizontalInput < 0) && isWallRun)
@@ -629,14 +640,43 @@ public class CharacterControllerScript : MonoBehaviour
             rb.AddForce(-wallNormal * 5f, ForceMode.Acceleration);
         }
 
-        if (useGravity)
-        {
-            rb.AddForce(transform.up * gravityCounterForce, ForceMode.Force);
-        }
-
         // Camera effects
         // fpCamSp.StartWallRunEffects();
     }
+
+    private void StartParabolicWallRun()
+    {
+        currentTime = 0f;
+        halfDuration = maxWallRunTime / 2f;
+        entryVelocityY = rb.velocity.y; 
+    }
+
+    private void UpdateParabolicYTrajectory()
+    {
+        currentTime += Time.deltaTime;
+
+
+        if (currentTime <= halfDuration)
+        {
+            // Ascending phase
+            float ascendY = entryVelocityY * currentTime - 0.5f * gravity * Mathf.Pow(currentTime, 2);
+            rb.velocity = new Vector3(rb.velocity.x, ascendY, rb.velocity.z);
+        }
+        else if (currentTime <= maxWallRunTime)
+        {
+            // Descending phase
+            float t = currentTime - halfDuration; // Adjust time
+            float descendY = entryVelocityY * (halfDuration - t) - 0.5f * gravity * Mathf.Pow(t, 2);
+            rb.velocity = new Vector3(rb.velocity.x, descendY, rb.velocity.z);
+        }
+
+        // End wall run
+        if (currentTime >= maxWallRunTime)
+        {
+            StopWallRunning();
+        }
+    }
+
 
     private void StopWallRunning()
     {
@@ -663,7 +703,7 @@ public class CharacterControllerScript : MonoBehaviour
         //Reset Y vel and AddForce
         StopWallRunning();
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-        rb.AddForce(forceToApply, ForceMode.Impulse);
+        rb.AddForce(forceToApply * CalculateSpeedReductionFromHP(), ForceMode.Impulse);
 
         //Bug con el wallJump en paralelo no funcionando (arreglado?, no se)
         //Solucion: ?
@@ -729,7 +769,7 @@ public class CharacterControllerScript : MonoBehaviour
 
     private void WallClimb()
     {
-        rb.velocity = new Vector3(rb.velocity.x, climbSpeed, rb.velocity.z);
+        rb.velocity = new Vector3(rb.velocity.x, climbSpeed * CalculateSpeedReductionFromHP(), rb.velocity.z);
     }
 
     private void StopClimbing()
@@ -766,11 +806,18 @@ public class CharacterControllerScript : MonoBehaviour
         if (isFalling && groundedGeneral)
         {
             float fallDistance = startY - transform.position.y;
-
-            if (fallDistance > fallThreshold)
+            if (fallDistance < lethalFallDistance)
             {
-                float damage = (fallDistance - fallThreshold) * damageMultiplier;
-                ApplyDamage(damage);
+                if (fallDistance > fallThreshold)
+                {
+                    float damage = (fallDistance - fallThreshold) * damageMultiplier;
+                    ApplyDamage(damage);
+                }
+            }
+            else
+            {
+                Debug.Log("Player has died");
+                // Death();
             }
 
             isFalling = false;
@@ -791,8 +838,7 @@ public class CharacterControllerScript : MonoBehaviour
         {
             Debug.Log("Dmg reduced by landing");
             damage *= landingDmgMutiplier;
-            playerHealth -= damage;
-
+            
             // Call landingSFX function
         }
         else
@@ -801,7 +847,8 @@ public class CharacterControllerScript : MonoBehaviour
 
             // Call brokenLegsSFX function
         }
-        // Debug.Log("Dmg taken:" + damage);
+        playerHealth -= damage;
+        Debug.Log("Dmg taken:" + damage);
     }
 
     private void CheckPerfectLanding()
@@ -847,5 +894,31 @@ public class CharacterControllerScript : MonoBehaviour
                 thirdPersonCamera.SetActive(true);
                 break;
         }
+    }
+
+    private float CalculateSpeedReductionFromHP()
+    {
+        return playerHealth / startHP;
+    }
+
+    private void CheckForHPRegen()
+    {
+        if(playerHealth < startHP && canRegen)
+        {
+            StartCoroutine(RegenHP());
+        }
+
+        if (playerHealth > startHP)
+        {
+            playerHealth = startHP;
+        }
+    }
+
+    IEnumerator RegenHP()
+    {
+        canRegen = false;
+        playerHealth += HPRegenAmount;
+        yield return new WaitForSeconds(HPRegenRate);
+        canRegen = true;
     }
 }

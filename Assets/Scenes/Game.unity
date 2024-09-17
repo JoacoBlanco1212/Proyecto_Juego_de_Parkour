@@ -2043,6 +2043,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pauseMenu: {fileID: 972277033}
+--- !u!54 &967694885 stripped
+Rigidbody:
+  m_CorrespondingSourceObject: {fileID: 3660202063379688301, guid: 7bb29d10d57bbef46b968ae5d576710e,
+    type: 3}
+  m_PrefabInstance: {fileID: 967694882}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &967694888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 967694883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 517e20523238eea43b6350cf127bf137, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dead: 0
 --- !u!1 &969568199
 GameObject:
   m_ObjectHideFlags: 0
@@ -4828,8 +4847,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   firstCheckpoint: {fileID: 1869401270}
   raceMenu: {fileID: 432795180}
-  player: {fileID: 0}
-  playerRigidbody: {fileID: 0}
+  player: {fileID: 967694883}
+  playerRigidbody: {fileID: 967694885}
   startPoint: {fileID: 2044338395}
   startPoint2: {fileID: 794988150}
   countdownText: {fileID: 799384540}
