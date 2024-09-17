@@ -632,7 +632,7 @@ public class CharacterControllerScript : MonoBehaviour
 
         //Wallrun force
         rb.AddForce(wallForward * wallRunSpeed * CalculateSpeedReductionFromHP(), ForceMode.Acceleration);
-        UpdateParabolicYTrajectory();
+        // UpdateParabolicYTrajectory(); AUN NO FUNCA BIEN
 
         //Push player to wall for curve walls
         if (!(wallLeft && horizontalInput > 0) && !(wallRight && horizontalInput < 0) && isWallRun)
@@ -655,19 +655,22 @@ public class CharacterControllerScript : MonoBehaviour
     {
         currentTime += Time.deltaTime;
 
-
+        // Aun no funca bien
         if (currentTime <= halfDuration)
         {
             // Ascending phase
-            float ascendY = entryVelocityY * currentTime - 0.5f * gravity * Mathf.Pow(currentTime, 2);
+            float ascendY = Mathf.Log10(currentTime) + entryVelocityY;
             rb.velocity = new Vector3(rb.velocity.x, ascendY, rb.velocity.z);
+
         }
         else if (currentTime <= maxWallRunTime)
         {
             // Descending phase
             float t = currentTime - halfDuration; // Adjust time
-            float descendY = entryVelocityY * (halfDuration - t) - 0.5f * gravity * Mathf.Pow(t, 2);
-            rb.velocity = new Vector3(rb.velocity.x, descendY, rb.velocity.z);
+            float descendY = -(Mathf.Log10(t) + entryVelocityY);
+            Debug.Log(descendY);
+            rb.AddForce(-transform.up * descendY, ForceMode.Force);
+
         }
 
         // End wall run
@@ -682,6 +685,7 @@ public class CharacterControllerScript : MonoBehaviour
     {
         isWallRun = false;
         rb.useGravity = true;
+        currentTime = 0f;
         //End camera effects
         // fpCamSp.EndWallRunEffects();
     }
