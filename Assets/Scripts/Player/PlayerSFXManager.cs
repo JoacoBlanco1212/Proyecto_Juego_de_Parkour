@@ -17,13 +17,13 @@ public class PlayerSFXManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        sourceSFX.clip = null; 
+        sourceSFX.clip = null;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void PlaySprintSFX()
@@ -34,13 +34,22 @@ public class PlayerSFXManager : MonoBehaviour
             sourceSFX.PlayOneShot(sprintSFX);
         }
     }
-    
+
     public void PlayWalkSFX()
     {
         if (!sourceSFX.isPlaying)
         {
             sourceSFX.clip = walkSFX;
             sourceSFX.PlayOneShot(walkSFX);
+        }
+    }
+
+    public void PlayJumpSFX()
+    {
+        if (!sourceSFX.isPlaying)
+        {
+            sourceSFX.clip = jumpSFX;
+            sourceSFX.PlayOneShot(jumpSFX);
         }
     }
 }

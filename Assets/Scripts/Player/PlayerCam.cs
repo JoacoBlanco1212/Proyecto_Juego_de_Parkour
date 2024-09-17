@@ -7,7 +7,14 @@ public class PlayerCam : MonoBehaviour
     public float sensX;
     public float sensY;
 
+    public float targetPOV;
+    private float startPOV;
+    public float fovSpeed;
+
+    public float tiltAngle;
+
     public Transform orientation;
+    public Camera firstPersonCamera;
 
     float xRotation;
     float yRotation;
@@ -18,6 +25,8 @@ public class PlayerCam : MonoBehaviour
         //Lock mouse and hide it
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        startPOV = firstPersonCamera.fieldOfView;
     }
 
     // Update is called once per frame
@@ -37,13 +46,34 @@ public class PlayerCam : MonoBehaviour
 
     }
 
-    public void DoFov(float endValue)
+    public void DoFov()
     {
-
+        firstPersonCamera.fieldOfView = Mathf.Lerp(firstPersonCamera.fieldOfView, targetPOV, Time.deltaTime * fovSpeed);
+    }
+    public void EndFov()
+    {
+        firstPersonCamera.fieldOfView = Mathf.Lerp(firstPersonCamera.fieldOfView, startPOV, Time.deltaTime * fovSpeed);
     }
 
-    public void DoTilt(float zTilt)
+    public void DoTilt()
     {
+        firstPersonCamera.transform.rotation = Quaternion.Euler(0, 0, tiltAngle);
+    }
 
+    public void EndTilt()
+    {
+        firstPersonCamera.transform.rotation = Quaternion.Euler(0, 0, 0);
+    }
+
+    public void StartWallRunEffects()
+    {
+        DoFov();
+        DoTilt();
+    }
+
+    public void EndWallRunEffects()
+    {
+        EndFov();
+        EndTilt();
     }
 }

@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Scagno/a.unity.meta
 guid: e0a71074d87f6694ead82fb8870eb5d2
 DefaultImporter:
+========
+guid: 6a03ab31195160446a8fed51fdc0ee43
+PrefabImporter:
+>>>>>>>> a82f23e94234bcdd0d7d706d2c1732a0078813f1:Assets/Game(S)/PlayerVersions/Player 1.4.prefab.meta
   externalObjects: {}
   userData: 
   assetBundleName: 
