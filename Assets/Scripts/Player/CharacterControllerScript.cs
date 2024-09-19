@@ -112,10 +112,7 @@ public class CharacterControllerScript : MonoBehaviour
     RaycastHit slopeHit;
 
     [Header("HP Regen system")]
-    public float HPRegenRate;
-    public float HPRegenAmount;
     public float startHP;
-    private bool canRegen;
 
     [Header("Player info")]
     public float moveSpeed;
@@ -655,7 +652,6 @@ public class CharacterControllerScript : MonoBehaviour
     {
         currentTime += Time.deltaTime;
         float pendient = 0.1f;
-        // Aun no funca bien
         if (currentTime <= halfDuration)
         {
             // Ascending phase
@@ -908,7 +904,6 @@ public class CharacterControllerScript : MonoBehaviour
     {
         if(playerHealth < startHP && canRegen)
         {
-            // StartCoroutine(RegenHP());
             RegenerateHP();
         }
 
@@ -918,13 +913,6 @@ public class CharacterControllerScript : MonoBehaviour
         }
     }
 
-    IEnumerator RegenHP()
-    {
-        canRegen = false;
-        playerHealth += HPRegenAmount;
-        yield return new WaitForSeconds(HPRegenRate);
-        canRegen = true;
-    }
     private void RegenerateHP()
     {
         if (playerHealth < startHP)
