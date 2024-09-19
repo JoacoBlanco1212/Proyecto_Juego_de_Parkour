@@ -632,7 +632,7 @@ public class CharacterControllerScript : MonoBehaviour
 
         //Wallrun force
         rb.AddForce(wallForward * wallRunSpeed * CalculateSpeedReductionFromHP(), ForceMode.Acceleration);
-        // UpdateParabolicYTrajectory(); AUN NO FUNCA BIEN
+        UpdateParabolicYTrajectory(); 
 
         //Push player to wall for curve walls
         if (!(wallLeft && horizontalInput > 0) && !(wallRight && horizontalInput < 0) && isWallRun)
@@ -654,12 +654,12 @@ public class CharacterControllerScript : MonoBehaviour
     private void UpdateParabolicYTrajectory()
     {
         currentTime += Time.deltaTime;
-
+        float pendient = 0.1f;
         // Aun no funca bien
         if (currentTime <= halfDuration)
         {
             // Ascending phase
-            float ascendY = Mathf.Log10(currentTime) + entryVelocityY;
+            float ascendY = pendient * currentTime + entryVelocityY;
             rb.velocity = new Vector3(rb.velocity.x, ascendY, rb.velocity.z);
 
         }
@@ -667,8 +667,7 @@ public class CharacterControllerScript : MonoBehaviour
         {
             // Descending phase
             float t = currentTime - halfDuration; // Adjust time
-            float descendY = -(Mathf.Log10(t) + entryVelocityY);
-            Debug.Log(descendY);
+            float descendY = -pendient * t + entryVelocityY;
             rb.AddForce(-transform.up * descendY, ForceMode.Force);
 
         }
@@ -909,7 +908,8 @@ public class CharacterControllerScript : MonoBehaviour
     {
         if(playerHealth < startHP && canRegen)
         {
-            StartCoroutine(RegenHP());
+            // StartCoroutine(RegenHP());
+            RegenerateHP();
         }
 
         if (playerHealth > startHP)
@@ -924,5 +924,12 @@ public class CharacterControllerScript : MonoBehaviour
         playerHealth += HPRegenAmount;
         yield return new WaitForSeconds(HPRegenRate);
         canRegen = true;
+    }
+    private void RegenerateHP()
+    {
+        if (playerHealth < startHP)
+        {
+            playerHealth += Time.deltaTime;
+        }
     }
 }
