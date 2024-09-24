@@ -5193,12 +5193,12 @@ PrefabInstance:
         type: 3}
       propertyPath: sprintSFX
       value: 
-      objectReference: {fileID: 8300000, guid: e3edabbf37d897d4a8d3f10ccc48034d, type: 3}
+      objectReference: {fileID: 8300000, guid: 60e62402610ae5945b80021a4914e061, type: 3}
     - target: {fileID: 834849257915815247, guid: 84200679191ec1747bff0679b9c6b410,
         type: 3}
       propertyPath: walkSFX
       value: 
-      objectReference: {fileID: 8300000, guid: be1ac5bb18d4ebb4dbc4163de385cab9, type: 3}
+      objectReference: {fileID: 8300000, guid: 634a76ac532954c4aa94f7a6698e0ce2, type: 3}
     - target: {fileID: 834849259178960734, guid: 84200679191ec1747bff0679b9c6b410,
         type: 3}
       propertyPath: m_Name
