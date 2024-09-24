@@ -51,7 +51,7 @@ public class CharacterControllerScript : MonoBehaviour
 
     [Header("WallRun gravity")]
     private float entryVelocityY;
-    private float gravity = 9.8f; 
+    private float gravity = 9.8f;
     private float halfDuration;
     private float currentTime;
 
@@ -88,17 +88,6 @@ public class CharacterControllerScript : MonoBehaviour
     private float startY;
     private bool isPerfectLanding;
 
-    [Header("Keybinds")]
-    public KeyCode climbKey;
-    public KeyCode climbJumpKey;
-    public KeyCode wallJumpKey;
-    public KeyCode jumpKey;
-    public KeyCode crouchKey;
-    public KeyCode slideKey;
-    public KeyCode landingKey;
-    public KeyCode switchCameraKey;
-    public KeyCode sprintKey;
-
     [Header("Ground check")]
     public float rayLength = 0.3f;
     bool groundedGeneral;
@@ -112,7 +101,11 @@ public class CharacterControllerScript : MonoBehaviour
     RaycastHit slopeHit;
 
     [Header("HP Regen system")]
+    private bool canRegen;
     public float startHP;
+
+    [Header("Mantle")]
+    public float mantleRayLength;
 
     [Header("Player info")]
     public float moveSpeed;
@@ -130,8 +123,17 @@ public class CharacterControllerScript : MonoBehaviour
 
     [Header("Player atributes")]
     public float playerHealth;
-   
 
+    [Header("Keybinds")]
+    public KeyCode climbKey;
+    public KeyCode climbJumpKey;
+    public KeyCode wallJumpKey;
+    public KeyCode jumpKey;
+    public KeyCode crouchKey;
+    public KeyCode slideKey;
+    public KeyCode landingKey;
+    public KeyCode switchCameraKey;
+    public KeyCode sprintKey;
 
     [Header("References")]
     public Transform orientation;
@@ -145,6 +147,8 @@ public class CharacterControllerScript : MonoBehaviour
     public GameObject thirdPersonCamera;
     public PlayerSFXManager pSFX;
     public PlayerCam fpCamSp;
+    public Transform topMantleRayPos;
+    public Transform middleMantleRayPos;
 
     Vector3 moveDirection;
     float verticalInput;
@@ -222,6 +226,8 @@ public class CharacterControllerScript : MonoBehaviour
 
         checkForFallDmg();
         CheckForHPRegen();
+
+        // CheckForMantle(); Necesito implementacion del personaje, osea scagno la concha de tu madre
 
         StateHandler();
         AdjustGravityAndDrag();
@@ -436,6 +442,8 @@ public class CharacterControllerScript : MonoBehaviour
             //State: Walking
             state = MovementState.walking;
             moveSpeed = walkSpeed;
+
+            pSFX.PlayWalkSFX();
         }
         else if (!groundedGeneral)
         {
@@ -443,7 +451,7 @@ public class CharacterControllerScript : MonoBehaviour
             state = MovementState.air;
             moveSpeed = airSpeed;
         }
-        
+
     }
 
     private bool OnSlope()
@@ -455,7 +463,7 @@ public class CharacterControllerScript : MonoBehaviour
         // Debug.DrawRay(rayPos, Vector3.down * rayLength, IsThereASlope ? Color.green : Color.red);
 
 
-        if (IsThereASlope) 
+        if (IsThereASlope)
         {
             //Returns if the slope angle is walkable
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
@@ -544,14 +552,14 @@ public class CharacterControllerScript : MonoBehaviour
 
     private bool AboveGround()
     {
-        
+
         return !groundedGeneral;
     }
 
     private void whenToWallRun()
     {
         //State 1: WallRunning
-        if((wallLeft || wallRight) && verticalInput > 0 && AboveGround() && !exitingWall && Input.GetKey(wallJumpKey) && (rb.velocity.magnitude > wallRunSpeedRequierement || isClimbing))
+        if ((wallLeft || wallRight) && verticalInput > 0 && AboveGround() && !exitingWall && Input.GetKey(wallJumpKey) && (rb.velocity.magnitude > wallRunSpeedRequierement || isClimbing))
         {
             if (!isWallRun)
             {
@@ -580,7 +588,7 @@ public class CharacterControllerScript : MonoBehaviour
             {
                 StopWallRunning();
             }
-            
+
             if (exitWallTimer > 0)
             {
                 exitWallTimer -= Time.deltaTime;
@@ -598,7 +606,7 @@ public class CharacterControllerScript : MonoBehaviour
             {
                 StopWallRunning();
 
-                
+
             }
         }
     }
@@ -614,10 +622,10 @@ public class CharacterControllerScript : MonoBehaviour
     {
         rb.useGravity = false;
         // rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-        
+
         Vector3 wallNormal = wallRight ? rightWallHit.normal : leftWallHit.normal;
         Vector3 wallForward = Vector3.zero;
-        
+
         if (wallRight)
         {
             wallForward = Vector3.Cross(transform.up, wallNormal);
@@ -629,7 +637,7 @@ public class CharacterControllerScript : MonoBehaviour
 
         //Wallrun force
         rb.AddForce(wallForward * wallRunSpeed * CalculateSpeedReductionFromHP(), ForceMode.Acceleration);
-        UpdateParabolicYTrajectory(); 
+        UpdateParabolicYTrajectory();
 
         //Push player to wall for curve walls
         if (!(wallLeft && horizontalInput > 0) && !(wallRight && horizontalInput < 0) && isWallRun)
@@ -645,7 +653,7 @@ public class CharacterControllerScript : MonoBehaviour
     {
         currentTime = 0f;
         halfDuration = maxWallRunTime / 2f;
-        entryVelocityY = rb.velocity.y; 
+        entryVelocityY = rb.velocity.y;
     }
 
     private void UpdateParabolicYTrajectory()
@@ -674,7 +682,6 @@ public class CharacterControllerScript : MonoBehaviour
             StopWallRunning();
         }
     }
-
 
     private void StopWallRunning()
     {
@@ -789,18 +796,22 @@ public class CharacterControllerScript : MonoBehaviour
     private void checkForFallDmg()
     {
         //Detect when player starts falling
-        if (!isFalling && !groundedGeneral && rb.velocity.y < 0)
+        if (!isFalling && !groundedGeneral && rb.velocity.y < 0 && state == MovementState.air)
         {
             startY = transform.position.y;
             isFalling = true;
             isPerfectLanding = false;
         }
-
+        // Detect perfect landing
         if (isFalling)
         {
             CheckPerfectLanding();
         }
-
+        // Check if player is climbing or wallrunning to reset fallDmg
+        if (state == MovementState.wallRunning || state == MovementState.climbing)
+        {
+            isFalling = false;
+        }
         //Detect when player lands
         if (isFalling && groundedGeneral)
         {
@@ -861,6 +872,32 @@ public class CharacterControllerScript : MonoBehaviour
         }
     }
 
+    private float CalculateSpeedReductionFromHP()
+    {
+        return playerHealth / startHP;
+    }
+
+    private void CheckForHPRegen()
+    {
+        if(playerHealth < startHP && canRegen)
+        {
+            RegenerateHP();
+        }
+
+        if (playerHealth > startHP)
+        {
+            playerHealth = startHP;
+        }
+    }
+
+    private void RegenerateHP()
+    {
+        if (playerHealth < startHP)
+        {
+            playerHealth += Time.deltaTime;
+        }
+    }
+
     private void CheckForCameraInput()
     {
         if (Input.GetKeyDown(switchCameraKey))
@@ -895,29 +932,12 @@ public class CharacterControllerScript : MonoBehaviour
         }
     }
 
-    private float CalculateSpeedReductionFromHP()
+    private void CheckForMantle() // Necesito implementacion del personaje, osea scagno la concha de tu madre
     {
-        return playerHealth / startHP;
-    }
+        bool topMantleRay = Physics.Raycast(topMantleRayPos.position, orientation.forward, mantleRayLength);
+        Debug.DrawRay(topMantleRayPos.position, orientation.forward * mantleRayLength, topMantleRay ? Color.green : Color.red);
 
-    private void CheckForHPRegen()
-    {
-        if(playerHealth < startHP && canRegen)
-        {
-            RegenerateHP();
-        }
-
-        if (playerHealth > startHP)
-        {
-            playerHealth = startHP;
-        }
-    }
-
-    private void RegenerateHP()
-    {
-        if (playerHealth < startHP)
-        {
-            playerHealth += Time.deltaTime;
-        }
+        bool middleMantleRay = Physics.Raycast(middleMantleRayPos.position, orientation.forward, mantleRayLength);
+        Debug.DrawLine(middleMantleRayPos.position, orientation.forward * mantleRayLength, middleMantleRay ? Color.green : Color.red);
     }
 }

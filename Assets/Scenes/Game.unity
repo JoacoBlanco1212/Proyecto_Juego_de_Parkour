@@ -5189,6 +5189,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 834849257915815247, guid: 84200679191ec1747bff0679b9c6b410,
+        type: 3}
+      propertyPath: sprintSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: e3edabbf37d897d4a8d3f10ccc48034d, type: 3}
+    - target: {fileID: 834849257915815247, guid: 84200679191ec1747bff0679b9c6b410,
+        type: 3}
+      propertyPath: walkSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: be1ac5bb18d4ebb4dbc4163de385cab9, type: 3}
     - target: {fileID: 834849259178960734, guid: 84200679191ec1747bff0679b9c6b410,
         type: 3}
       propertyPath: m_Name
