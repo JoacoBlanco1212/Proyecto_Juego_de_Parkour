@@ -28,8 +28,11 @@ public class MainMenu : MonoBehaviour
 
     // Cambio de Volumen de música
     public void ChangeMusicVolume()
+
     {
-        mainAudioMixer.SetFloat("MusicVol", musicVol.value);
+        float volume = musicVol.value;
+        mainAudioMixer.SetFloat("MusicVol", Mathf.Log10(volume) * 20);
+      
     }
 
     // Cambio de Volumen de los "efectos especiales" (Sfx)

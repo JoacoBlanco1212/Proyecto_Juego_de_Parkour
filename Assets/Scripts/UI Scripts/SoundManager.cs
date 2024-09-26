@@ -42,7 +42,7 @@ public class SoundManager : MonoBehaviour
     { 
         if (!sourceMusic.isPlaying)
         {
-            // SetRandomOnPlaylist();
+             SetRandomOnPlaylist();
         }
     }
     public void SetRandomOnPlaylist()
