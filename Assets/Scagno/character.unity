@@ -326,6 +326,10 @@ PrefabInstance:
       propertyPath: m_WarningMessage
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 9500000, guid: a2b30c963bff1124abe1aa82d840c693, type: 3}
+      propertyPath: m_CullingMode
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a2b30c963bff1124abe1aa82d840c693, type: 3}
 --- !u!4 &1826884271 stripped
