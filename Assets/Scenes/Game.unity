@@ -1310,14 +1310,14 @@ RectTransform:
   m_GameObject: {fileID: 658080828}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.91, y: 0.91, z: 0.91}
   m_Children: []
   m_Father: {fileID: 432795181}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 16, y: 101}
+  m_AnchoredPosition: {x: 5, y: 101}
   m_SizeDelta: {x: 484.31, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &658080830
@@ -3685,7 +3685,7 @@ RectTransform:
   m_GameObject: {fileID: 1672878168}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.86586, y: 0.86586, z: 0.86586}
   m_Children:
   - {fileID: 1742645864}
   m_Father: {fileID: 432795181}
@@ -3693,7 +3693,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -167, y: -34}
+  m_AnchoredPosition: {x: -118, y: -34}
   m_SizeDelta: {x: 172.3, y: 56.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1672878170
@@ -4944,7 +4944,7 @@ RectTransform:
   m_GameObject: {fileID: 2005454739}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.86586, y: 0.86586, z: 0.86586}
   m_Children:
   - {fileID: 1111399695}
   m_Father: {fileID: 432795181}
@@ -4952,7 +4952,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 186, y: -34}
+  m_AnchoredPosition: {x: 119, y: -34}
   m_SizeDelta: {x: 172.3, y: 56.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2005454741
@@ -5198,7 +5198,12 @@ PrefabInstance:
         type: 3}
       propertyPath: walkSFX
       value: 
-      objectReference: {fileID: 8300000, guid: 634a76ac532954c4aa94f7a6698e0ce2, type: 3}
+      objectReference: {fileID: 8300000, guid: 1a6e5693eceb7b44e86f977ae870087b, type: 3}
+    - target: {fileID: 834849257915815247, guid: 84200679191ec1747bff0679b9c6b410,
+        type: 3}
+      propertyPath: damageSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 08325da42c05d564091a2193c95d914e, type: 3}
     - target: {fileID: 834849259178960734, guid: 84200679191ec1747bff0679b9c6b410,
         type: 3}
       propertyPath: m_Name

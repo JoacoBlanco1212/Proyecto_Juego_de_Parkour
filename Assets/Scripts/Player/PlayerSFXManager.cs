@@ -9,6 +9,8 @@ public class PlayerSFXManager : MonoBehaviour
     public AudioClip walkSFX;
     public AudioClip jumpSFX;
     public AudioClip landSFX;
+    public AudioClip damageSFX;
+
     // Se crea una variable y funcion para cada audio
 
     [Header("References")]
@@ -52,4 +54,13 @@ public class PlayerSFXManager : MonoBehaviour
             sourceSFX.PlayOneShot(jumpSFX);
         }
     }
+    public void PlayDamageSFX()
+    {
+        if (!sourceSFX.isPlaying)
+        {
+            sourceSFX.clip = damageSFX;
+            sourceSFX.PlayOneShot(damageSFX);
+        }
+
+        }
 }
