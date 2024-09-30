@@ -856,6 +856,7 @@ public class CharacterControllerScript : MonoBehaviour
             Debug.Log("Didnt reduce dmg");
 
             // Call brokenLegsSFX function
+            pSFX.PlayDamageSFX();
         }
         playerHealth -= damage;
         Debug.Log("Dmg taken:" + damage);
