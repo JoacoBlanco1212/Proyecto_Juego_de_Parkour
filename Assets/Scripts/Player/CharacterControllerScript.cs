@@ -841,6 +841,7 @@ public class CharacterControllerScript : MonoBehaviour
             Debug.Log("Perfect landing!");
             damage = 0f;
             //Perfect landing system
+            pSFX.PlaylandSFX();
 
             // Call perfectLandingSFX function
         }

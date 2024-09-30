@@ -5193,7 +5193,7 @@ PrefabInstance:
         type: 3}
       propertyPath: sprintSFX
       value: 
-      objectReference: {fileID: 8300000, guid: 0ff13d8454b9418468cc05c82e93f34a, type: 3}
+      objectReference: {fileID: 8300000, guid: d34ecbfa496274b4e8a958234c397c68, type: 3}
     - target: {fileID: 834849257915815247, guid: 84200679191ec1747bff0679b9c6b410,
         type: 3}
       propertyPath: walkSFX

@@ -62,5 +62,13 @@ public class PlayerSFXManager : MonoBehaviour
             sourceSFX.PlayOneShot(damageSFX);
         }
 
+    }
+    public void PlaylandSFX()
+    {
+        if (!sourceSFX.isPlaying)
+        {
+            sourceSFX.clip = landSFX;
+            sourceSFX.PlayOneShot(landSFX);
         }
+    }
 }
