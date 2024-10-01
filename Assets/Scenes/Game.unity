@@ -5189,6 +5189,12 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 834849257915815246, guid: 84200679191ec1747bff0679b9c6b410,
+        type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 243444380190865792, guid: a9e426e8b00f69a46b9bb3f31969d7e8,
+        type: 2}
     - target: {fileID: 834849257915815247, guid: 84200679191ec1747bff0679b9c6b410,
         type: 3}
       propertyPath: sprintSFX
@@ -5198,12 +5204,17 @@ PrefabInstance:
         type: 3}
       propertyPath: walkSFX
       value: 
-      objectReference: {fileID: 8300000, guid: 1a6e5693eceb7b44e86f977ae870087b, type: 3}
+      objectReference: {fileID: 8300000, guid: adc916a684452754a8f9136a059b40d9, type: 3}
     - target: {fileID: 834849257915815247, guid: 84200679191ec1747bff0679b9c6b410,
         type: 3}
       propertyPath: damageSFX
       value: 
       objectReference: {fileID: 8300000, guid: 08325da42c05d564091a2193c95d914e, type: 3}
+    - target: {fileID: 834849257915815247, guid: 84200679191ec1747bff0679b9c6b410,
+        type: 3}
+      propertyPath: jumpSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 247d07944b4b61945b40e499266f780c, type: 3}
     - target: {fileID: 834849259178960734, guid: 84200679191ec1747bff0679b9c6b410,
         type: 3}
       propertyPath: m_Name

@@ -15,6 +15,33 @@ public class MainMenu : MonoBehaviour
     public AudioMixer mainAudioMixer;
 
     // Cambio de Graficos
+
+    public void Start()
+    {
+        if (PlayerPrefs.HasKey("musicVolume"))
+        {
+            LoadVolume();
+        }
+        else
+        {
+            SetMusicVolume();
+
+        }
+    }
+
+    public void SetMusicVolume()
+    {
+        float volume = musicVol.value;
+        mainAudioMixer.SetFloat("MusicVol", Mathf.Log10(volume) * 20);
+        PlayerPrefs.SetFloat("musicvolume", volume);
+    }
+
+    public void LoadVolume()
+    {
+        musicVol.value = PlayerPrefs.GetFloat("musicvolume");
+        SetMusicVolume();
+    }
+
     public void ChangeGraphicsQuality()
     {
         QualitySettings.SetQualityLevel(graphicsDropDown.value);
@@ -26,14 +53,7 @@ public class MainMenu : MonoBehaviour
         mainAudioMixer.SetFloat("MasterVol", masterVol.value);
     }
 
-    // Cambio de Volumen de música
-    public void ChangeMusicVolume()
-
-    {
-        float volume = musicVol.value;
-        mainAudioMixer.SetFloat("MusicVol", Mathf.Log10(volume) * 20);
-      
-    }
+    
 
     // Cambio de Volumen de los "efectos especiales" (Sfx)
     public void ChangeSfxVolume()

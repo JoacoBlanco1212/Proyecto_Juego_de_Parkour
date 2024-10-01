@@ -48,7 +48,6 @@ public class PlayerSFXManager : MonoBehaviour
 
     public void PlayJumpSFX()
     {
-        if (!sourceSFX.isPlaying)
         {
             sourceSFX.clip = jumpSFX;
             sourceSFX.PlayOneShot(jumpSFX);

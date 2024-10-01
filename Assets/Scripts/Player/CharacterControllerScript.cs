@@ -384,6 +384,7 @@ public class CharacterControllerScript : MonoBehaviour
 
         rb.AddForce(transform.up * jumpForce * CalculateSpeedReductionFromHP(), ForceMode.Impulse);
 
+        pSFX.PlayJumpSFX();
         // Call jumpSFX function
     }
 
