@@ -43,7 +43,7 @@ public class characterscript : MonoBehaviour
         if(currentanimation != animation)
         {
             currentanimation = animation;
-            object p = Animator.Crossfade(animation, crossfade); //transiciona las animaciones 
+            ertyg.CrossFade(animation, crossfade); //transiciona las animaciones 
         }
     }
     private void FixedUpdate()
