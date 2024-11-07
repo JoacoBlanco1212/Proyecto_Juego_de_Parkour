@@ -18,7 +18,7 @@ public class Checkpoint : MonoBehaviour
     {
         time += Time.deltaTime;
 
-        transform.position = new Vector3(position.x, position.y + Mathf.Cos(time) / 5, position.z);
+        transform.position = new Vector3(position.x, position.y + Mathf.Cos(time) / 5 , position.z);
     }
 
     public void ActivateNextCheckpoint() // Activo el prox Checkpoint
