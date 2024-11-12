@@ -562,6 +562,7 @@ public class CharacterControllerScript : MonoBehaviour
         //State 1: WallRunning
         if ((wallLeft || wallRight) && verticalInput > 0 && AboveGround() && !exitingWall && Input.GetKey(wallJumpKey) && (rb.velocity.magnitude > wallRunSpeedRequierement || isClimbing))
         {
+            Debug.Log("test1");
             if (!isWallRun)
             {
                 StartWallRunning();
@@ -578,13 +579,15 @@ public class CharacterControllerScript : MonoBehaviour
             }
         }
         // Wall jump
-        else if (Input.GetKeyUp(wallJumpKey) && isWallRun)
+        if (Input.GetKeyDown(wallJumpKey) && isWallRun)
         {
+            Debug.Log("testWJ");
             wallJump();
         }
         //State 2: Exiting wallRun
         else if (exitingWall)
         {
+            Debug.Log("test end");
             if (isWallRun)
             {
                 StopWallRunning();
@@ -603,7 +606,8 @@ public class CharacterControllerScript : MonoBehaviour
         //State 3: None
         else
         {
-            if (isWallRun)
+
+            if (isWallRun && verticalInput <= 0)
             {
                 StopWallRunning();
 
@@ -660,7 +664,7 @@ public class CharacterControllerScript : MonoBehaviour
     private void UpdateParabolicYTrajectory()
     {
         currentTime += Time.deltaTime;
-        float pendient = 0.1f;
+        float pendient = 0.03f;
         if (currentTime <= halfDuration)
         {
             // Ascending phase
