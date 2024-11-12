@@ -886,6 +886,10 @@ public class CharacterControllerScript : MonoBehaviour
 
     private void CheckForHPRegen()
     {
+        if (playerHealth < 0)
+        {
+            playerHealth = 0;
+        }
         if(playerHealth < startHP && canRegen)
         {
             RegenerateHP();
