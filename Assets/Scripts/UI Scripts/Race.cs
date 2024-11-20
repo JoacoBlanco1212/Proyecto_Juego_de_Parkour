@@ -6,6 +6,7 @@ using UnityEngine;
 public class Race : MonoBehaviour
 {
 
+    public RaceTrigger raceTrigger;
     private GameObject player;
     private Vector3 vectorPoint;
     [SerializeField] float dead;
@@ -30,9 +31,13 @@ public class Race : MonoBehaviour
         {
             vectorPoint = player.transform.position;
             Checkpoint checkpoint = other.GetComponent<Checkpoint>();
-            checkpoint.ActivateNextCheckpoint();
-            vectorPoint = checkpoint.transform.position;
-            other.gameObject.SetActive(false);
+	    if(checkpoint.nextCheckpoint != null) {	
+               checkpoint.ActivateNextCheckpoint();
+               vectorPoint = checkpoint.transform.position;
+               other.gameObject.SetActive(false);
+	    } else {
+               raceTrigger.OnLastCheckpointReached();
+	    }
         }
        
     }
