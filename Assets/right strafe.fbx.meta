@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 9e882329c75e892448cc755eb5b07e06
+guid: 66812b5495a23e54386a4472c72e8dee
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
@@ -120,11 +120,26 @@ ModelImporter:
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
   importAnimation: 1
-  copyAvatar: 0
+  copyAvatar: 1
   humanDescription:
     serializedVersion: 2
     human: []
-    skeleton: []
+    skeleton:
+    - name: Modelo Personaje Final(Clone)
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Humano
+      parentName: Modelo Personaje Final(Clone)
+      position: {x: -0.31912062, y: -0.0602293, z: -0.09623472}
+      rotation: {x: -4.3297806e-17, y: 0.7071068, z: 0.7071068, w: -4.3297806e-17}
+      scale: {x: 5.9726157, y: 5.9726157, z: 5.9726157}
+    - name: Cube
+      parentName: Modelo Personaje Final(Clone)
+      position: {x: 0.4474718, y: 5.5881224, z: 0.13494061}
+      rotation: {x: -4.3297806e-17, y: 0.7071068, z: 0.7071068, w: -4.3297806e-17}
+      scale: {x: 0.81350094, y: 0.81350094, z: 0.81350094}
     armTwist: 0.5
     foreArmTwist: 0.5
     upperLegTwist: 0.5
@@ -134,9 +149,10 @@ ModelImporter:
     feetSpacing: 0
     rootMotionBoneName: 
     hasTranslationDoF: 0
-    hasExtraRoot: 0
+    hasExtraRoot: 1
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 4cfdf562b8a541946b0db4ab16bf1450,
+    type: 3}
   animationType: 2
   humanoidOversampling: 1
   additionalBone: 0

@@ -15,6 +15,7 @@ public class PlayerCam : MonoBehaviour
 
     public Transform orientation;
     public Camera firstPersonCamera;
+    public Transform playerModel;
 
     float xRotation;
     float yRotation;
@@ -22,7 +23,7 @@ public class PlayerCam : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //Lock mouse and hide it
+        //Lock mouse and hide it 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
@@ -43,6 +44,7 @@ public class PlayerCam : MonoBehaviour
 
         transform.rotation = Quaternion.Euler(-xRotation, yRotation, 0);
         orientation.rotation = Quaternion.Euler(0, yRotation, 0);
+        playerModel.rotation = Quaternion.Euler(0, yRotation, 0);
 
     }
 
