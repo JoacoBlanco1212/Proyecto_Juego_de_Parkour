@@ -5296,6 +5296,27 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1869401270}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1884377325 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100004, guid: 4cfdf562b8a541946b0db4ab16bf1450,
+    type: 3}
+  m_PrefabInstance: {fileID: 2092008232}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1884377327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1884377325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fd84e6c549c86b41a7598dc594ede81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  walkSpeedThreshold: 0.3
+  runSpeedThreshold: 0.6
+  turnSensitivity: 0.5
 --- !u!1 &1896862456
 GameObject:
   m_ObjectHideFlags: 0
@@ -6020,6 +6041,14 @@ PrefabInstance:
     - target: {fileID: 400004, guid: 4cfdf562b8a541946b0db4ab16bf1450, type: 3}
       propertyPath: m_LocalScale.z
       value: 0.175
+      objectReference: {fileID: 0}
+    - target: {fileID: 9500000, guid: 4cfdf562b8a541946b0db4ab16bf1450, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 064a4955d6d2836489c9ebff53c0eb73, type: 2}
+    - target: {fileID: 9500000, guid: 4cfdf562b8a541946b0db4ab16bf1450, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4cfdf562b8a541946b0db4ab16bf1450, type: 3}
