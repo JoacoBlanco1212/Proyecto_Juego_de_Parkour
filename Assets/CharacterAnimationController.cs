@@ -4,67 +4,30 @@ using UnityEngine;
 
 public class CharacterAnimationController : MonoBehaviour
 {
-    private Animator animator;
-    private Rigidbody rb;
+    public float velocidad= 5f;
+    public Animator animator;
 
-    public float walkSpeedThreshold = 0.3f; // Velocidad mínima para caminar
-    public float runSpeedThreshold = 0.6f;  // Velocidad mínima para correr
-    public float turnSensitivity = 0.5f;    // Sensibilidad para giros
-
-    void Start()
+    void start()
     {
-        animator = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody>();
+
     }
-
-    void Update()
+    void update()
     {
-        // Obtener input del jugador
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
-        Vector3 velocity = new Vector3(horizontal, 0, vertical);
+        float velocidadX = Input.GetAxis("Horizontal")*Time.deltaTime*velocidad;
+        
+        animator.SetFloat("speed", velocidadX*velocidad);
 
-        // Calcular magnitud de velocidad (moverse en Walk o Run)
-        float speed = Mathf.Clamp01(velocity.magnitude);
-
-        // Actualizar parámetro Speed
-        animator.SetFloat("Speed", speed);
-
-        // Cambiar a caminar o correr según el umbral
-        if (speed > walkSpeedThreshold && speed <= runSpeedThreshold)
+        if (velocidadX > 0)
         {
-            // Estado Walk
-            animator.SetFloat("Speed", 0.5f);
+            transform.localScale = new Vector3(1, 1, 1);
         }
-        else if (speed > runSpeedThreshold)
+        if (velocidadX < 0)
         {
-            // Estado Run
-            animator.SetFloat("Speed", 1.0f);
+            transform.localScale = new Vector3 (-1, 1, 1);
         }
-
-        // Giros izquierda/derecha
-        if (horizontal < -turnSensitivity)
-        {
-            animator.SetFloat("TurnDirection", -1f); // Girar a la izquierda
-        }
-        else if (horizontal > turnSensitivity)
-        {
-            animator.SetFloat("TurnDirection", 1f); // Girar a la derecha
-        }
-        else
-        {
-            animator.SetFloat("TurnDirection", 0f); // Sin giro
-        }
-
-        // Detectar salto
-        if (Input.GetButtonDown("Jump"))
-        {
-            animator.SetBool("IsJumping", true);
-        }
-        else
-        {
-            animator.SetBool("IsJumping", false);
-        }
+        Vector3 posicion = transform.position;
+        
+        transform.position = new Vector3(velocidadX + posicion.x,posicion.y,posicion.z);
 
     }
 }
