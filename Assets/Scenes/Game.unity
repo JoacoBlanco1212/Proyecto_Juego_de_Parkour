@@ -5314,9 +5314,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fd84e6c549c86b41a7598dc594ede81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeedThreshold: 0.3
-  runSpeedThreshold: 0.6
-  turnSensitivity: 0.5
 --- !u!1 &1896862456
 GameObject:
   m_ObjectHideFlags: 0
@@ -5962,6 +5959,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_TagString
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 9127861691595328668, guid: 84200679191ec1747bff0679b9c6b410,
+        type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9127861691595328668, guid: 84200679191ec1747bff0679b9c6b410,
+        type: 3}
+      propertyPath: m_CollisionDetection
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 84200679191ec1747bff0679b9c6b410, type: 3}
